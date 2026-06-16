@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClassQuest — Class 9 CBSE Quiz Game</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  background:#0a0612;
+  background-image:
+    linear-gradient(rgba(167,139,250,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(167,139,250,.045) 1px,transparent 1px);
+  background-size:52px 52px;
+  color:#f1ecfb;font-family:'Segoe UI',system-ui,sans-serif;
+  display:flex;justify-content:center;
+  padding:20px 16px 52px;min-height:100vh;
+}
+#app{width:100%;max-width:640px}
+/* HOME */
+.home{display:flex;flex-direction:column;gap:22px;padding-top:14px}
+.brand{text-align:center;padding:4px 0 8px}
+.brand-name{
+  font-size:2.7rem;font-weight:800;letter-spacing:-1.5px;line-height:1;
+  background:linear-gradient(118deg,#a78bfa 10%,#f472b6 90%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.brand-sub{margin-top:8px;font-size:.67rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#4a3a6b}
+.sh{font-size:.63rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#4a3a6b;margin-bottom:9px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sh-badge{
+  font-size:.58rem;font-weight:700;letter-spacing:1px;text-transform:none;
+  background:rgba(167,139,250,.15);color:#a78bfa;
+  padding:2px 8px;border-radius:99px;
+}
+.sh-hint{font-size:.58rem;font-weight:400;color:#4a3a6b;text-transform:none;letter-spacing:0}
+.lg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lg-btn,.df-btn{
+  background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.07);
+  border-radius:12px;cursor:pointer;transition:all .14s;color:#f1ecfb;font-family:inherit;
+}
+.lg-btn{padding:14px 8px;text-align:center}
+.lg-btn:hover,.df-btn:hover{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.28)}
+.lg-btn.on,.df-btn.on{background:rgba(167,139,250,.14);border-color:#a78bfa;box-shadow:0 0 18px rgba(167,139,250,.2)}
+.lg-em{font-size:1.4rem;display:block;margin-bottom:5px}
+.lg-nm{font-size:.72rem;font-weight:700}
+/* TOPICS */
+@keyframes topicFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.topics-wrap{animation:topicFade .25s ease}
+.topic-grid{display:flex;flex-wrap:wrap;gap:7px}
+.topic-btn{
+  background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.07);
+  border-radius:99px;padding:7px 14px;cursor:pointer;
+  color:#7a6a9a;font-family:inherit;font-size:.72rem;font-weight:700;
+  transition:all .14s;
+}
+.topic-btn:hover{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.28);color:#c4b5fd}
+.topic-btn.on{background:rgba(167,139,250,.16);border-color:#a78bfa;color:#c4b5fd;box-shadow:0 0 10px rgba(167,139,250,.16)}
+.grp{margin-bottom:14px}
+.grp:last-child{margin-bottom:0}
+.grp-h{font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c4b5fd;margin-bottom:7px;opacity:.85}
+.clear-btn{
+  background:none;border:none;color:#5a4a7b;font-family:inherit;
+  font-size:.62rem;font-weight:700;cursor:pointer;padding:4px 6px;text-decoration:underline;
+  text-underline-offset:2px;letter-spacing:.5px;
+}
+.clear-btn:hover{color:#a78bfa}
+.df-row{display:flex;gap:8px}
+.qt-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:480px){.qt-row{grid-template-columns:repeat(2,1fr)}}
+.df-btn{flex:1;padding:14px 10px;text-align:center}
+.df-ic{font-size:1.1rem;display:block;margin-bottom:3px}
+.df-nm{font-size:.77rem;font-weight:700;display:block}
+.df-ds{font-size:.62rem;color:#4a3a6b;margin-top:2px}
+.tip{
+  background:rgba(167,139,250,.04);border:1px solid rgba(167,139,250,.12);
+  border-radius:11px;padding:12px 15px;font-size:.74rem;color:#8a7aaa;line-height:1.7;
+}
+.tip b{color:#a78bfa}
+.go-btn{
+  width:100%;padding:16px;
+  background:linear-gradient(118deg,#a78bfa,#f472b6);
+  border:none;border-radius:13px;color:#15071a;
+  font-family:inherit;font-size:.9rem;font-weight:800;letter-spacing:1.5px;
+  cursor:pointer;box-shadow:0 4px 20px rgba(167,139,250,.3);
+  transition:transform .14s,box-shadow .14s;
+}
+.go-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(167,139,250,.42)}
+.go-btn:active{transform:translateY(0)}
+/* GAME */
+.game{display:flex;flex-direction:column;gap:13px;padding-top:6px}
+.tbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 17px;
+  background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:13px;
+}
+.hts{display:flex;gap:3px;font-size:.92rem}
+.pts{font-size:1.15rem;font-weight:800;color:#a78bfa}
+.stk{
+  font-size:.71rem;font-weight:700;color:#fbbf24;
+  background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.18);
+  padding:3px 10px;border-radius:99px;display:none;
+}
+.prg-bar{background:rgba(255,255,255,.06);border-radius:99px;height:5px;overflow:hidden}
+.prg-fill{height:100%;background:linear-gradient(90deg,#a78bfa,#f472b6);border-radius:99px;transition:width .55s cubic-bezier(.4,0,.2,1);width:0%}
+.prg-lbl{font-size:.6rem;color:#4a3a6b;font-weight:700;margin-top:5px;text-align:right;letter-spacing:1px}
+.card{background:#150c22;border:1px solid rgba(255,255,255,.07);border-radius:17px;padding:22px;min-height:180px}
+@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.q-inner{animation:cardIn .28s ease}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:46px 0;gap:13px}
+.sp{width:32px;height:32px;border:3px solid rgba(167,139,250,.16);border-top-color:#a78bfa;border-radius:50%;animation:spin .65s linear infinite}
+.ld-t{font-size:.67rem;color:#6a5a8b;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.q-topic{font-size:.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;margin-bottom:10px;opacity:.8}
+.qt{font-size:.98rem;font-weight:600;line-height:1.72;color:#e8def8;margin-bottom:16px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{
+  display:flex;align-items:center;gap:11px;padding:12px 15px;
+  background:rgba(255,255,255,.025);border:1.5px solid rgba(255,255,255,.07);
+  border-radius:10px;cursor:pointer;color:#e8def8;
+  font-family:inherit;font-size:.85rem;font-weight:500;
+  text-align:left;transition:background .13s,border-color .13s;width:100%;
+}
+.opt:not([disabled]):hover{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.26)}
+.opt[disabled]{cursor:default}
+.opt.ok{background:rgba(34,197,94,.1);border-color:#22c55e;color:#86efac}
+.opt.ng{background:rgba(239,68,68,.1);border-color:#ef4444;color:#fca5a5}
+.opt.dm{opacity:.28}
+.opt-l{
+  min-width:24px;height:24px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.67rem;font-weight:800;flex-shrink:0;
+  background:rgba(255,255,255,.06);color:#6a5a8b;
+}
+.opt.ok .opt-l{background:rgba(34,197,94,.2);color:#22c55e}
+.opt.ng .opt-l{background:rgba(239,68,68,.2);color:#ef4444}
+/* fill-in-the-blank */
+.fill-row{display:flex;gap:8px}
+.fill-in{
+  flex:1;padding:13px 15px;
+  background:rgba(255,255,255,.025);border:1.5px solid rgba(255,255,255,.1);
+  border-radius:10px;color:#f1ecfb;font-family:inherit;font-size:.92rem;font-weight:600;
+  outline:none;transition:border-color .13s;
+}
+.fill-in:focus{border-color:#a78bfa;background:rgba(167,139,250,.06)}
+.fill-in.ok{border-color:#22c55e;background:rgba(34,197,94,.1);color:#86efac}
+.fill-in.ng{border-color:#ef4444;background:rgba(239,68,68,.1);color:#fca5a5}
+.fill-go{
+  padding:0 20px;background:linear-gradient(118deg,#a78bfa,#f472b6);
+  border:none;border-radius:10px;color:#15071a;font-family:inherit;
+  font-size:.8rem;font-weight:800;letter-spacing:1px;cursor:pointer;
+}
+.fill-go[disabled]{opacity:.4;cursor:default}
+.ans-reveal{margin-top:10px;font-size:.8rem;color:#86efac;font-weight:600}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.expl{
+  margin-top:12px;padding:11px 14px;
+  background:rgba(167,139,250,.05);border:1px solid rgba(167,139,250,.12);
+  border-radius:9px;font-size:.79rem;color:#9a8aba;line-height:1.67;display:none;
+  animation:fadeUp .28s ease;
+}
+.expl-ok{color:#22c55e;font-weight:700}
+.expl-ng{color:#ef4444;font-weight:700}
+.nx-btn{
+  width:100%;padding:15px;background:linear-gradient(118deg,#a78bfa,#f472b6);
+  border:none;border-radius:12px;color:#15071a;
+  font-family:inherit;font-size:.86rem;font-weight:800;letter-spacing:1.5px;
+  cursor:pointer;box-shadow:0 3px 14px rgba(167,139,250,.22);
+  transition:transform .13s,box-shadow .13s;display:none;
+}
+.nx-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(167,139,250,.32)}
+/* END */
+.end{display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px;padding:40px 0}
+.end-ic{font-size:3.5rem}
+.end-ti{
+  font-size:2rem;font-weight:800;letter-spacing:-.5px;
+  background:linear-gradient(118deg,#a78bfa,#f472b6);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.end-sc{font-size:3rem;font-weight:800;color:#fbbf24;line-height:1}
+.end-sl{font-size:.6rem;color:#4a3a6b;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-top:5px}
+.end-grade{font-size:.85rem;font-weight:700;color:#c4b5fd}
+.st-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.st{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 18px;min-width:90px}
+.st-v{font-size:1.3rem;font-weight:800;color:#a78bfa}
+.st-l{font-size:.58rem;color:#4a3a6b;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:3px}
+.pa-btn{
+  padding:15px 42px;background:linear-gradient(118deg,#a78bfa,#f472b6);
+  border:none;border-radius:12px;color:#15071a;
+  font-family:inherit;font-size:.86rem;font-weight:800;letter-spacing:1.5px;
+  cursor:pointer;box-shadow:0 4px 18px rgba(167,139,250,.3);
+  transition:transform .14s,box-shadow .14s;
+}
+.pa-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(167,139,250,.42)}
+.footer{text-align:center;font-size:.58rem;color:#33274d;margin-top:6px;letter-spacing:.5px}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- ============================================================
+     QUESTION BANK — Class 9 CBSE / NCERT
+     Each entry: {sub, diff, topic, question, options[], correct, explanation}
+     Fully offline — no server, no API key, no internet needed.
+     ============================================================ -->
+<script>
+/* ============================================================================
+   ClassQuest — Question Bank  (Class 9 · CBSE / NCERT)
+   ----------------------------------------------------------------------------
+   Common fields for EVERY question:
+     sub         subject (must match a name in SUBJECTS)
+     diff        'Beginner' | 'Intermediate' | 'Advanced'
+     topic       chapter name (used as the chapter filter)
+     question    the question text
+     explanation short note shown after answering   (optional)
+
+   THREE question types are supported. Set 'type' to one of: 'mcq' | 'tf' | 'fill'
+   (if you leave 'type' out, it is auto-detected).
+
+   1) MCQ  → multiple choice
+      {sub:'Maths', diff:'Beginner', topic:'The World of Numbers', type:'mcq',
+       question:'Which of these is irrational?',
+       options:['√2','0.25','3/7','−5'],
+       correct:0,                      // index (0-based) of the right option
+       explanation:'√2 is non-terminating, non-repeating.'}
+
+   2) TRUE / FALSE
+      {sub:'Science', diff:'Beginner', topic:'Sound Waves: Characteristics and Applications',
+       type:'tf',
+       question:'Sound can travel through vacuum.',
+       answer:false,                   // true or false
+       explanation:'Sound needs a medium to travel.'}
+
+   3) FILL IN THE BLANK
+      {sub:'Maths', diff:'Beginner', topic:'The World of Numbers',
+       type:'fill',
+       question:'The value of π up to two decimals is ____.',
+       answer:'3.14',                  // the correct answer (case-insensitive)
+       accept:['3.14159'],             // optional: extra accepted answers
+       explanation:'π ≈ 3.14.'}
+   ============================================================================ */
+/* ----------------------------------------------------------------------------
+   CHAPTERS — the official book chapter list for each subject.
+   Whatever is listed here shows up as a chapter button (even chapters that
+   don't have questions yet). Subjects not listed here fall back to deriving
+   chapters from the question bank automatically.
+
+   A subject can be EITHER:
+     • a flat array of chapter names, OR
+     • an object of groups:  { "Physics": [...], "Chemistry": [...], ... }
+       (used for Science, which shows Physics / Chemistry / Biology groups).
+   ---------------------------------------------------------------------------- */
+window.CHAPTERS = {
+  // Maths (Ganita Manjari)
+  'Maths': [
+    'Orienting Yourself: The Use of Coordinates',
+    'Introduction to Linear Polynomials',
+    'The World of Numbers',
+    'Exploring Algebraic Identities',
+    "I'm Up and Down, and Round and Round",
+    'Measuring Space: Perimeter and Area',
+    'The Mathematics of Maybe: Introduction to Probability',
+    'Predicting What Comes Next: Exploring Sequences and Progressions'
+  ],
+
+  // Science (Exploration) — grouped into Physics / Chemistry / Biology
+  'Science': {
+    'Physics': [
+      'Describing Motion Around Us',
+      'How Forces Affect Motion',
+      'Work, Energy, and Simple Machines',
+      'Sound Waves: Characteristics and Applications'
+    ],
+    'Chemistry': [
+      'Exploring Mixtures and their Separation',
+      'Journey Inside the Atom',
+      'Atomic Foundations of Matter'
+    ],
+    'Biology': [
+      'Cell: The Building Block of Life',
+      'Tissues in Action',
+      'Reproduction: How Life Continues',
+      'Patterns in Life: Diversity and Classification',
+      'Earth as a System: Energy, Matter, and Life'
+    ],
+    'General': [
+      'Exploration: Entering the World of Secondary Science'
+    ]
+  },
+
+  // English (Kaveri) — single book, 16 chapters
+  'English': [
+    'How I Taught My Grandmother to Read',
+    'The Pot Maker',
+    'Winds of Change',
+    'Vitamin-M',
+    'The World of Limitless Possibilities',
+    'Twin Melodies',
+    'Carrier of Words',
+    'Follow That Dream',
+    'Bharat Our Land',
+    'Gifts of Grace - Honouring Our Vocations',
+    'Canvas of Soil',
+    'I Cannot Remember My Mother',
+    'Nine Gold Medals',
+    'A Friend Found in Music',
+    'Believe in Yourself',
+    'Words'
+  ],
+
+  // Hindi (Ganga) — single book, 12 chapters
+  'Hindi': [
+    'दो बैलों की कथा',
+    'क्या लिखूं?',
+    'संवादहीन',
+    'ऐसी भी बातें होती हैं (लता मंगेशकर से साक्षात्कार)',
+    'आखिरी चट्टान तक',
+    'रीढ़ की हड्डी',
+    'में और मेरा देश',
+    'रैदास के पद',
+    'राम-परशुराम-लक्ष्मण संवाद',
+    'भारती, जय, विजयोत्सव!',
+    'झाँसी की रानी',
+    'घर की याद'
+  ]
+};
+
+
+/* ----------------------------------------------------------------------------
+   QUESTION_BANK — add your questions here (MCQ / True-False / Fill-in-the-blank).
+   See the format examples in the header comment above. Empty for now.
+   ---------------------------------------------------------------------------- */
+window.QUESTION_BANK = [
+
+];
+
+</script>
+
+<script>
+const SUBJECTS = [
+  {name:'Maths',     em:'📐'},
+  {name:'Science',   em:'🔬'},
+  {name:'History',   em:'🏛️'},
+  {name:'Geography', em:'🌍'},
+  {name:'Civics',    em:'⚖️'},
+  {name:'Economics', em:'💰'},
+  {name:'English',   em:'📖'},
+  {name:'Hindi',     em:'🪔'}
+];
+
+const DIFFS = [
+  {name:'Beginner',     ic:'🌱',ds:'Recall & basics'},
+  {name:'Intermediate', ic:'⚙️',ds:'Apply & connect'},
+  {name:'Advanced',     ic:'🔥',ds:'Think deeper'}
+];
+
+/* Question types the player can pick on the home screen.
+   'Mixed' = any type. The others restrict the quiz to one type. */
+const TYPES = [
+  {name:'Mixed',      val:'mixed', ic:'🎲', ds:'All types'},
+  {name:'MCQ',        val:'mcq',   ic:'🔘', ds:'Multiple choice'},
+  {name:'Fill Blank', val:'fill',  ic:'✍️', ds:'Type the answer'},
+  {name:'True/False', val:'tf',    ic:'✅', ds:'True or false'}
+];
+
+const TOTAL = 10;
+
+let G = {
+  sub:'Maths', diff:'Beginner', qtype:'mixed', topics:[],
+  q:null, sel:null, fb:null,
+  score:0, lives:3, streak:0, best:0,
+  qn:0, hits:0, used:[], pool:[],
+  recent:[],            // last few question texts, sent to AI to avoid repeats
+  aiAvailable:false,    // detected at boot via /api/status
+  loading:false
+};
+
+/* ── AI helpers ──────────────────────────────────────────────────────────
+   Ask our own backend whether an AI key is configured. If yes, we fetch
+   fresh questions from /api/question; if anything fails we silently fall
+   back to the offline question bank so the game never breaks. */
+async function detectAI(){
+  try{
+    const r = await fetch('/api/status', {cache:'no-store'});
+    const j = await r.json();
+    G.aiAvailable = !!j.ai;
+  }catch(_){ G.aiAvailable = false; }
+}
+
+async function fetchAIQuestion(){
+  try{
+    const r = await fetch('/api/question', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        sub:G.sub, diff:G.diff, qtype:G.qtype, topics:G.topics, recent:G.recent
+      })
+    });
+    const j = await r.json();
+    if(j && j.question && j.question.question){
+      const q = j.question;
+      q.sub = G.sub; q.diff = G.diff;       // tag with current selection
+      return q;
+    }
+  }catch(_){}
+  return null;
+}
+
+/* ── tiny helpers ── */
+const $ = id => document.getElementById(id);
+const app = html => { document.getElementById('app').innerHTML = html; };
+function h(s){ return String(s).replace(/[&<>"']/g, c => (
+  {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+/* ── chapter helpers ──
+   CHAPTERS[sub] can be EITHER:
+     • a flat array of chapter names, OR
+     • an object of { "Group Name": [chapter, chapter, ...] } for grouping
+       (e.g. Science → Physics / Chemistry / Biology).
+   topicsFor() always returns a FLAT list of chapter names (for filtering),
+   groupsFor() returns the grouped form (or null if not grouped). */
+function groupsFor(sub){
+  const c = window.CHAPTERS && window.CHAPTERS[sub];
+  if (c && !Array.isArray(c) && typeof c === 'object') return c;
+  return null;
+}
+function topicsFor(sub){
+  const c = window.CHAPTERS && window.CHAPTERS[sub];
+  if (c) {
+    if (Array.isArray(c)) return c;
+    // grouped object → flatten all groups into one list
+    return Object.keys(c).reduce((acc,g)=>acc.concat(c[g]), []);
+  }
+  const bank = (window.QUESTION_BANK || []);
+  const set = [];
+  bank.forEach(q=>{ if(q.sub===sub && !set.includes(q.topic)) set.push(q.topic); });
+  return set;
+}
+
+/* ── EVENT DELEGATION ── */
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-a]');
+  if(!t) return;
+  const a = t.getAttribute('data-a');
+  const v = t.getAttribute('data-v');
+  if(a==='sub'){ G.sub=v; G.topics=[]; renderHome(); }
+  else if(a==='diff'){ G.diff=v; renderHome(); }
+  else if(a==='qtype'){ G.qtype=v; renderHome(); }
+  else if(a==='topic'){ toggleTopic(v); }
+  else if(a==='clearTopics'){ G.topics=[]; renderTopics(); }
+  else if(a==='start'){ startGame(); }
+  else if(a==='ans'){ answer(parseInt(v,10)); }
+  else if(a==='submitFill'){ submitFill(); }
+  else if(a==='next'){ next(); }
+  else if(a==='home'){ renderHome(); }
+});
+
+/* ── RENDER TOPICS (chapters) ── */
+function chapBtn(t){
+  return `<button class="topic-btn${G.topics.includes(t)?' on':''}" data-a="topic" data-v="${h(t)}">${h(t)}</button>`;
+}
+function renderTopics(){
+  const wrap = $('topics-wrap');
+  if(!wrap) return;
+  const list = topicsFor(G.sub);
+  const groups = groupsFor(G.sub);
+  const n = G.topics.length;
+  if(list.length===0){ wrap.innerHTML=''; return; }
+
+  const header = `<div class="sh">
+      Chapters
+      ${n>0
+        ? `<span class="sh-badge">${n} selected</span><button class="clear-btn" data-a="clearTopics">clear</button>`
+        : `<span class="sh-hint">pick some or leave blank for all</span>`}
+    </div>`;
+
+  let body;
+  if(groups){
+    // grouped view: each group gets its own sub-heading + chapter pills
+    body = Object.keys(groups).map(g=>`
+      <div class="grp">
+        <div class="grp-h">${h(g)}</div>
+        <div class="topic-grid">${groups[g].map(chapBtn).join('')}</div>
+      </div>`).join('');
+  } else {
+    body = `<div class="topic-grid">${list.map(chapBtn).join('')}</div>`;
+  }
+
+  wrap.innerHTML = `<div class="topics-wrap">${header}${body}</div>`;
+}
+
+function toggleTopic(t){
+  const i = G.topics.indexOf(t);
+  if (i===-1) G.topics.push(t); else G.topics.splice(i,1);
+  renderTopics();
+}
+
+/* ── RENDER HOME ── */
+function renderHome(){
+  app(`<div class="home">
+    <div class="brand">
+      <div class="brand-name">ClassQuest</div>
+      <div class="brand-sub">Class 9 · CBSE / NCERT</div>
+    </div>
+    <div>
+      <div class="sh">Choose a subject</div>
+      <div class="lg-grid">
+        ${SUBJECTS.map(s=>`<button class="lg-btn${G.sub===s.name?' on':''}" data-a="sub" data-v="${h(s.name)}">
+          <span class="lg-em">${s.em}</span><span class="lg-nm">${h(s.name)}</span>
+        </button>`).join('')}
+      </div>
+    </div>
+    <div id="topics-wrap"></div>
+    <div>
+      <div class="sh">Difficulty</div>
+      <div class="df-row">
+        ${DIFFS.map(d=>`<button class="df-btn${G.diff===d.name?' on':''}" data-a="diff" data-v="${h(d.name)}">
+          <span class="df-ic">${d.ic}</span>
+          <span class="df-nm">${h(d.name)}</span>
+          <span class="df-ds">${h(d.ds)}</span>
+        </button>`).join('')}
+      </div>
+    </div>
+    <div>
+      <div class="sh">Question type</div>
+      <div class="qt-row">
+        ${TYPES.map(t=>`<button class="df-btn qt-btn${G.qtype===t.val?' on':''}" data-a="qtype" data-v="${h(t.val)}">
+          <span class="df-ic">${t.ic}</span>
+          <span class="df-nm">${h(t.name)}</span>
+          <span class="df-ds">${h(t.ds)}</span>
+        </button>`).join('')}
+      </div>
+    </div>
+    <div class="tip">
+      <b>🔥 Streak bonus</b> — 3+ correct in a row earns 20 pts per answer instead of 10.
+      &nbsp;&nbsp;<b>❤️ Lives</b> — you have 3. Lose them all and the quest ends.
+    </div>
+    <button class="go-btn" data-a="start">START QUEST →</button>
+    <div class="footer">${G.aiAvailable
+        ? '🤖 AI questions ON · fresh questions every time'
+        : '📚 Offline mode · '+(window.QUESTION_BANK||[]).length+' questions in the bank'}</div>
+  </div>`);
+  renderTopics();
+}
+
+/* ── RENDER GAME SHELL ── */
+function renderGameShell(){
+  const topicLabel = G.topics.length>0 ? ` · ${G.topics.length} ch.` : '';
+  app(`<div class="game">
+    <div class="tbar">
+      <div class="hts" id="hts">❤️❤️❤️</div>
+      <div class="pts" id="pts">0 pts</div>
+      <div class="stk" id="stk"></div>
+    </div>
+    <div>
+      <div class="prg-bar"><div class="prg-fill" id="pf"></div></div>
+      <div class="prg-lbl" id="pl">${h(G.sub)}${topicLabel} · ${h(G.diff)} · Q0/${TOTAL}</div>
+    </div>
+    <div class="card" id="card"></div>
+    <button class="nx-btn" id="nx" data-a="next">NEXT QUESTION →</button>
+  </div>`);
+}
+
+/* ── RENDER END ── */
+function renderEnd(win){
+  const pct = G.qn>0 ? Math.round(G.hits/G.qn*100) : 0;
+  let grade='Keep practising! 💪', ic = win?'🏆':'💀';
+  if(pct>=90) grade='Outstanding! Topper material 🌟';
+  else if(pct>=70) grade='Great job! 🎉';
+  else if(pct>=50) grade='Good effort — revise a bit more 📖';
+  app(`<div class="end">
+    <div class="end-ic">${ic}</div>
+    <div class="end-ti">${win?'Quest Complete!':'Game Over'}</div>
+    <div>
+      <div class="end-sc">${G.score}</div>
+      <div class="end-sl">Points Earned</div>
+    </div>
+    <div class="end-grade">${grade}</div>
+    <div class="st-row">
+      <div class="st"><div class="st-v">${G.hits}/${G.qn}</div><div class="st-l">Correct</div></div>
+      <div class="st"><div class="st-v">${pct}%</div><div class="st-l">Accuracy</div></div>
+      <div class="st"><div class="st-v">${G.best}🔥</div><div class="st-l">Best Streak</div></div>
+      <div class="st"><div class="st-v">${G.lives}❤️</div><div class="st-l">Lives Left</div></div>
+    </div>
+    <button class="pa-btn" data-a="home">PLAY AGAIN</button>
+  </div>`);
+}
+
+/* ── UPDATE HUD ── */
+function hud(){
+  const hts=$('hts'); if(hts) hts.textContent=[0,1,2].map(i=>i<G.lives?'❤️':'🖤').join('');
+  const pts=$('pts'); if(pts) pts.textContent=`${G.score} pts`;
+  const stk=$('stk'); if(stk){ if(G.streak>=2){ stk.textContent=`🔥 ${G.streak}× streak`; stk.style.display='block'; } else { stk.style.display='none'; } }
+  const pf=$('pf');   if(pf)  pf.style.width=`${Math.min(G.qn/TOTAL*100,100)}%`;
+  const pl=$('pl');   if(pl){ const tl=G.topics.length>0?` · ${G.topics.length} ch.`:''; pl.textContent=`${G.sub}${tl} · ${G.diff} · Q${G.qn}/${TOTAL}`; }
+}
+
+/* ── BUILD THE POOL ── filter bank by subject+difficulty(+chapters),
+   gracefully broaden if too few match so the game never stalls. */
+/* Work out a question's type. If 'type' is missing we infer it:
+   has options[] → mcq, has true/false answer → tf, else fill. */
+function qType(q){
+  if(q.type) return q.type;
+  if(Array.isArray(q.options) && q.options.length) return 'mcq';
+  if(typeof q.answer === 'boolean') return 'tf';
+  return 'fill';
+}
+
+function buildPool(){
+  const bank = (window.QUESTION_BANK || []);
+  const bySub = bank.filter(q => q.sub === G.sub);
+  // honour the chosen question type ('mixed' = allow all)
+  const typeOk = q => G.qtype==='mixed' || qType(q)===G.qtype;
+
+  let pool = bySub.filter(q =>
+    typeOk(q) &&
+    q.diff === G.diff &&
+    (G.topics.length === 0 || G.topics.includes(q.topic))
+  );
+  if (pool.length < TOTAL) {                       // broaden: drop chapter filter
+    const extra = bySub.filter(q => typeOk(q) && q.diff === G.diff && !pool.includes(q));
+    pool = pool.concat(extra);
+  }
+  if (pool.length < TOTAL) {                       // broaden: any difficulty (keep type)
+    const extra = bySub.filter(q => typeOk(q) && !pool.includes(q));
+    pool = pool.concat(extra);
+  }
+  if (pool.length === 0) pool = bank.slice();      // last resort: anything
+  return shuffle(pool);
+}
+
+function pickFromBank(){
+  if(!G.pool.length) G.pool = buildPool();
+  let next = G.pool.find(q => !G.used.includes(q));
+  if(!next){ G.used = []; next = G.pool[0]; }
+  if(next){ G.pool = G.pool.filter(q => q !== next); G.used.push(next); }
+  return next || null;
+}
+
+/* ── RENDER CURRENT QUESTION ── */
+const TYPE_LABEL = {mcq:'MCQ', tf:'True / False', fill:'Fill in the blank'};
+function renderQuestion(){
+  const card=$('card');
+  if(!card||!G.q) return;
+  const t = qType(G.q);
+
+  let bodyHTML;
+  if(t==='fill'){
+    // Fill in the blank — text input + check button
+    bodyHTML = `<div class="fill-row">
+        <input class="fill-in" id="fillin" type="text" autocomplete="off"
+               placeholder="Type your answer…" />
+        <button class="fill-go" id="fillgo" data-a="submitFill">CHECK</button>
+      </div>`;
+  } else {
+    // MCQ or True/False — both render as clickable option buttons
+    const opts = t==='tf' ? ['True','False'] : (G.q.options||[]);
+    bodyHTML = `<div class="opts">
+      ${opts.map((o,i)=>`
+        <button class="opt" data-a="ans" data-v="${i}">
+          <span class="opt-l">${t==='tf' ? (i===0?'T':'F') : String.fromCharCode(65+i)}</span>
+          <span>${h(o)}</span>
+        </button>`).join('')}
+    </div>`;
+  }
+
+  card.innerHTML=`<div class="q-inner">
+    <div class="q-topic">${h(G.q.topic||G.sub)} · ${TYPE_LABEL[t]||''}</div>
+    <div class="qt">${h(G.q.question)}</div>
+    ${bodyHTML}
+    <div class="expl" id="expl"></div>
+  </div>`;
+
+  // let Enter submit a fill-in answer
+  if(t==='fill'){
+    const inp=$('fillin');
+    if(inp){
+      inp.focus();
+      inp.addEventListener('keydown',e=>{ if(e.key==='Enter') submitFill(); });
+    }
+  }
+}
+
+/* ── LOAD NEXT QUESTION ── */
+async function loadQ(){
+  G.sel=null; G.fb=null; G.loading=true;
+  const nx=$('nx'); if(nx) nx.style.display='none';
+  const card=$('card'); if(card) card.innerHTML=loader();
+
+  let q = null;
+
+  // 1) Try a fresh AI question when the server reports a key is set.
+  if(G.aiAvailable) q = await fetchAIQuestion();
+
+  // 2) Fallback to the offline bank (also the default with no server).
+  if(!q){
+    if(!G.aiAvailable) await new Promise(r=>setTimeout(r,250)); // tiny pause for UX
+    q = pickFromBank();
+  }
+
+  if(!q){
+    if(card) card.innerHTML=`<div class="qt">No questions available for this selection.<br><br>
+      ${G.aiAvailable ? 'AI request failed and the offline bank is empty.' : 'Add questions to the bank, or run the server with an AI key.'}</div>`;
+    G.loading=false;
+    return;
+  }
+
+  G.q=q; G.qn++;
+  // remember recent question text so the AI avoids repeats
+  G.recent.push((q.question||'').slice(0,80));
+  if(G.recent.length>8) G.recent.shift();
+
+  hud();
+  renderQuestion();
+  G.loading=false;
+}
+
+/* spinner shown while a question loads (esp. while waiting on the AI) */
+function loader(){
+  return `<div class="ld"><div class="sp"></div>
+    <div class="ld-t">${G.aiAvailable ? 'Generating question…' : 'Loading…'}</div></div>`;
+}
+
+/* Shared scoring + feedback after any answer.
+   isOk = was it right; revealText = optional "correct answer was…" line. */
+function scoreAnswer(isOk, revealText){
+  if(isOk){
+    G.score += G.streak>=2 ? 20 : 10;
+    G.streak++; G.best=Math.max(G.best,G.streak); G.hits++; G.fb='ok';
+  } else {
+    G.lives=Math.max(0,G.lives-1); G.streak=0; G.fb='ng';
+  }
+  hud();
+  setTimeout(()=>{
+    const expl=$('expl');
+    if(expl){
+      const tag = G.fb==='ok'
+        ? `<span class="expl-ok">✓ Correct! </span>`
+        : `<span class="expl-ng">✗ Incorrect. </span>`;
+      const reveal = (!isOk && revealText)
+        ? `<div class="ans-reveal">Answer: ${h(revealText)}</div>` : '';
+      expl.innerHTML = tag + (G.q.explanation ? h(G.q.explanation) : '') + reveal;
+      expl.style.display='block';
+    }
+    const nx=$('nx');
+    if(nx){ nx.textContent = (G.qn>=TOTAL || G.lives<=0) ? 'SEE RESULTS →' : 'NEXT QUESTION →'; nx.style.display='block'; }
+  },360);
+}
+
+/* ── HANDLE MCQ / TRUE-FALSE ANSWER ── */
+function answer(idx){
+  if(G.sel!==null||!G.q) return;
+  const t = qType(G.q);
+  const opts = t==='tf' ? ['True','False'] : (G.q.options||[]);
+  if(idx<0||idx>=opts.length) return;
+
+  // correct index: TF uses q.answer (true/false), MCQ uses q.correct
+  const correct = t==='tf' ? (G.q.answer===true ? 0 : 1) : G.q.correct;
+  const isOk = idx===correct;
+  G.sel=idx;
+
+  document.querySelectorAll('.opt').forEach((btn,i)=>{
+    btn.disabled=true;
+    if(i===correct)        btn.className='opt ok';
+    else if(i===idx)       btn.className='opt ng';
+    else                   btn.className='opt dm';
+  });
+
+  scoreAnswer(isOk, opts[correct]);
+}
+
+/* ── HANDLE FILL-IN-THE-BLANK ANSWER ──
+   Accepts q.answer (string) and optional q.accept (array of extra valid answers).
+   Matching is case-insensitive and ignores surrounding spaces. */
+function submitFill(){
+  if(G.sel!==null||!G.q) return;
+  const inp=$('fillin'); if(!inp) return;
+  const typed=(inp.value||'').trim();
+  if(!typed) return;                 // ignore empty submits
+  G.sel=typed;
+
+  const norm = s => String(s).trim().toLowerCase().replace(/\s+/g,' ');
+  const valid = [G.q.answer].concat(G.q.accept||[]).filter(x=>x!=null).map(norm);
+  const isOk = valid.includes(norm(typed));
+
+  inp.disabled=true;
+  inp.className='fill-in '+(isOk?'ok':'ng');
+  const go=$('fillgo'); if(go) go.disabled=true;
+
+  scoreAnswer(isOk, G.q.answer);
+}
+
+/* ── NEXT / START ── */
+function next(){
+  if(G.lives<=0)  { renderEnd(false); return; }
+  if(G.qn>=TOTAL) { renderEnd(true);  return; }
+  loadQ();
+}
+
+function startGame(){
+  Object.assign(G,{score:0,lives:3,streak:0,best:0,qn:0,hits:0,used:[],recent:[],q:null,sel:null,fb:null});
+  G.pool = buildPool();
+  renderGameShell();
+  loadQ();
+}
+
+/* ── BOOT ── */
+renderHome();
+detectAI().then(()=>renderHome());   // re-render once we know if AI is on
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0cb86750f6fa722',t:'MTc4MTYzMDg0Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
