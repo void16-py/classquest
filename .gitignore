@@ -1,0 +1,12 @@
+# dependencies
+node_modules/
+
+# never commit secrets / API keys
+.env
+*.env
+.env.local
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.log
