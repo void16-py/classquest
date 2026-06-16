@@ -8,268 +8,369 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%}
+
 body{
-  background:#0a0612;
+  background:#090514;
   background-image:
-    linear-gradient(rgba(167,139,250,.045) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(167,139,250,.045) 1px,transparent 1px);
-  background-size:52px 52px;
-  color:#f1ecfb;font-family:'Segoe UI',system-ui,sans-serif;
-  display:flex;justify-content:center;
-  padding:20px 16px 52px;min-height:100vh;
+    radial-gradient(at 50% 0%, var(--subject-glow, rgba(167,139,250,0.08)) 0px, transparent 60%),
+    linear-gradient(rgba(167,139,250,.01) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(167,139,250,.01) 1px,transparent 1px);
+  background-size:100% 100%, 40px 40px, 40px 40px;
+  color:#f1ecfb;
+  font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+  display:flex;
+  justify-content:center;
+  padding:24px 16px 60px;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  transition: background 0.5s ease; 
 }
+
 #app{width:100%;max-width:640px}
-/* HOME */
-.home{display:flex;flex-direction:column;gap:22px;padding-top:14px}
-.brand{text-align:center;padding:4px 0 8px}
+
+/* HOME SCREEN BEAUTIFICATION */
+.home{display:flex;flex-direction:column;gap:28px;padding-top:14px}
+.brand{text-align:center;padding:12px 0 16px}
 .brand-name{
-  font-size:2.7rem;font-weight:800;letter-spacing:-1.5px;line-height:1;
-  background:linear-gradient(118deg,#a78bfa 10%,#f472b6 90%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-size:3.5rem;
+  font-weight:900;
+  letter-spacing:-2px;
+  line-height:1;
+  background:linear-gradient(135deg, #c4b5fd 0%, #a78bfa 35%, #f472b6 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  filter:drop-shadow(0 2px 8px rgba(167,139,250,0.2));
 }
-.brand-sub{margin-top:8px;font-size:.67rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#4a3a6b}
-.sh{font-size:.63rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#4a3a6b;margin-bottom:9px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.brand-sub{
+  margin-top:10px;
+  font-size:.75rem;
+  font-weight:800;
+  letter-spacing:5px;
+  text-transform:uppercase;
+  color:#6d5c94;
+}
+
+.sh{
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  color:#8b7aa1;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
 .sh-badge{
-  font-size:.58rem;font-weight:700;letter-spacing:1px;text-transform:none;
-  background:rgba(167,139,250,.15);color:#a78bfa;
-  padding:2px 8px;border-radius:99px;
+  font-size:.65rem;
+  font-weight:700;
+  letter-spacing:0.5px;
+  text-transform:none;
+  background:rgba(167,139,250,.18);
+  color:#c4b5fd;
+  padding:3px 10px;
+  border-radius:99px;
+  border:1px solid rgba(167,139,250,0.2);
 }
-.sh-hint{font-size:.58rem;font-weight:400;color:#4a3a6b;text-transform:none;letter-spacing:0}
-.lg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.lg-btn,.df-btn{
-  background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.07);
-  border-radius:12px;cursor:pointer;transition:all .14s;color:#f1ecfb;font-family:inherit;
+.sh-hint{font-size:.68rem;font-weight:500;color:#524375;text-transform:none;letter-spacing:0}
+
+/* GRID & BUTTON DESIGNS */
+.lg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.lg-btn, .df-btn, .num-btn, .num-in{
+  background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  cursor:pointer;
+  transition:all .2s cubic-bezier(0.4, 0, 0.2, 1);
+  color:#f1ecfb;
+  font-family:inherit;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
 }
-.lg-btn{padding:14px 8px;text-align:center}
-.lg-btn:hover,.df-btn:hover{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.28)}
-.lg-btn.on,.df-btn.on{background:rgba(167,139,250,.14);border-color:#a78bfa;box-shadow:0 0 18px rgba(167,139,250,.2)}
-.lg-em{font-size:1.4rem;display:block;margin-bottom:5px}
-.lg-nm{font-size:.72rem;font-weight:700}
-/* TOPICS */
-@keyframes topicFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.topics-wrap{animation:topicFade .25s ease}
-.topic-grid{display:flex;flex-wrap:wrap;gap:7px}
+
+.lg-btn{padding:18px 10px;text-align:center;box-shadow:inset 0 1px 1px rgba(255,255,255,0.03)}
+.lg-btn:hover, .df-btn:hover, .num-btn:hover{
+  background:rgba(167,139,250,.07);
+  border-color:rgba(167,139,250,.35);
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+.lg-btn.on, .df-btn.on, .num-btn.on{
+  background:linear-gradient(135deg, rgba(167,139,250,.18), rgba(244,114,182,.06));
+  border-color:#a78bfa;
+  box-shadow:0 0 20px rgba(167,139,250,.25), inset 0 1px 1px rgba(255,255,255,0.1);
+  transform:translateY(-1px);
+}
+
+.lg-em{font-size:1.6rem;display:block;margin-bottom:6px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15))}
+.lg-nm{font-size:.78rem;font-weight:700;color:#d1c4e9}
+
+/* TOPICS CHAPTER PILLS */
+@keyframes topicFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.topics-wrap{animation:topicFade .3s cubic-bezier(0.4, 0, 0.2, 1)}
+.topic-grid{display:flex;flex-wrap:wrap;gap:8px}
 .topic-btn{
-  background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.07);
-  border-radius:99px;padding:7px 14px;cursor:pointer;
-  color:#7a6a9a;font-family:inherit;font-size:.72rem;font-weight:700;
-  transition:all .14s;
+  background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:99px;
+  padding:8px 16px;
+  cursor:pointer;
+  color:#9a8cb4;
+  font-family:inherit;
+  font-size:.75rem;
+  font-weight:600;
+  transition:all .18s;
 }
-.topic-btn:hover{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.28);color:#c4b5fd}
-.topic-btn.on{background:rgba(167,139,250,.16);border-color:#a78bfa;color:#c4b5fd;box-shadow:0 0 10px rgba(167,139,250,.16)}
-.grp{margin-bottom:14px}
+.topic-btn:hover{
+  background:rgba(167,139,250,.08);
+  border-color:rgba(167,139,250,.3);
+  color:#e2d9f3;
+}
+.topic-btn.on{
+  background:rgba(167,139,250,.2);
+  border-color:#a78bfa;
+  color:#ffffff;
+  box-shadow:0 0 14px rgba(167,139,250,.2);
+}
+
+.grp{margin-bottom:18px;background:rgba(255,255,255,0.01);padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,0.02)}
 .grp:last-child{margin-bottom:0}
-.grp-h{font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#c4b5fd;margin-bottom:7px;opacity:.85}
+.grp-h{font-size:.68rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#c4b5fd;margin-bottom:10px;opacity:.9}
 .clear-btn{
-  background:none;border:none;color:#5a4a7b;font-family:inherit;
-  font-size:.62rem;font-weight:700;cursor:pointer;padding:4px 6px;text-decoration:underline;
-  text-underline-offset:2px;letter-spacing:.5px;
+  background:none;border:none;color:#6b5994;font-family:inherit;
+  font-size:.68rem;font-weight:700;cursor:pointer;padding:4px 6px;text-decoration:none;
+  letter-spacing:.5px;transition:color .15s;
 }
-.clear-btn:hover{color:#a78bfa}
-.df-row{display:flex;gap:8px}
-.qt-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.clear-btn:hover{color:#f472b6}
+
+.df-row{display:flex;gap:10px}
+.qt-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 @media(max-width:480px){.qt-row{grid-template-columns:repeat(2,1fr)}}
-.num-row{display:flex;gap:8px;flex-wrap:wrap}
-.num-btn{
-  flex:1;min-width:54px;padding:12px 8px;text-align:center;
-  background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.07);
-  border-radius:12px;cursor:pointer;color:#f1ecfb;font-family:inherit;
-  font-size:.9rem;font-weight:800;transition:all .14s;
-}
-.num-btn:hover{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.28)}
-.num-btn.on{background:rgba(167,139,250,.14);border-color:#a78bfa;box-shadow:0 0 14px rgba(167,139,250,.18)}
+
+.num-row{display:flex;gap:10px;flex-wrap:wrap}
+.num-btn{flex:1;min-width:58px;padding:14px 8px;font-size:.95rem;font-weight:800}
 .num-in{
-  flex:1;min-width:80px;padding:12px 14px;
-  background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.1);
-  border-radius:12px;color:#f1ecfb;font-family:inherit;font-size:.86rem;font-weight:700;
-  outline:none;transition:border-color .14s;
+  flex:1;min-width:90px;padding:12px 16px;
+  background:rgba(255,255,255,.01);
+  border:1px solid rgba(255,255,255,.08);
+  outline:none;font-weight:700;font-size:.9rem;
 }
-.num-in:focus{border-color:#a78bfa;background:rgba(167,139,250,.06)}
-.num-in::placeholder{color:#5a4a7b;font-weight:600}
-.df-btn{flex:1;padding:14px 10px;text-align:center}
-.df-ic{font-size:1.1rem;display:block;margin-bottom:3px}
-.df-nm{font-size:.77rem;font-weight:700;display:block}
-.df-ds{font-size:.62rem;color:#4a3a6b;margin-top:2px}
+.num-in:focus{border-color:#a78bfa;background:rgba(167,139,250,.05);box-shadow:0 0 12px rgba(167,139,250,0.15)}
+.num-in::placeholder{color:#4e3d6f;font-weight:600}
+
+.df-btn{flex:1;padding:16px 12px;text-align:center;box-shadow:inset 0 1px 1px rgba(255,255,255,0.02)}
+.df-ic{font-size:1.25rem;display:block;margin-bottom:4px}
+.df-nm{font-size:.82rem;font-weight:700;display:block;color:#e2d9f3}
+.df-ds{font-size:.65rem;color:#635287;margin-top:3px;font-weight:500}
+
 .tip{
-  background:rgba(167,139,250,.04);border:1px solid rgba(167,139,250,.12);
-  border-radius:11px;padding:12px 15px;font-size:.74rem;color:#8a7aaa;line-height:1.7;
+  background:linear-gradient(135deg, rgba(167,139,250,.05), rgba(244,114,182,0.02));
+  border:1px solid rgba(167,139,250,.15);
+  border-radius:14px;padding:14px 18px;font-size:.78rem;color:#9b8cb8;line-height:1.6;
 }
-.tip b{color:#a78bfa}
+.tip b{color:#c4b5fd;font-weight:700}
+
 .go-btn{
-  width:100%;padding:16px;
-  background:linear-gradient(118deg,#a78bfa,#f472b6);
-  border:none;border-radius:13px;color:#15071a;
-  font-family:inherit;font-size:.9rem;font-weight:800;letter-spacing:1.5px;
-  cursor:pointer;box-shadow:0 4px 20px rgba(167,139,250,.3);
-  transition:transform .14s,box-shadow .14s;
+  width:100%;padding:18px;
+  background:linear-gradient(135deg,#a78bfa 0%,#f472b6 100%);
+  border:none;border-radius:16px;color:#0e0618;
+  font-family:inherit;font-size:.95rem;font-weight:800;letter-spacing:2px;
+  cursor:pointer;box-shadow:0 6px 24px rgba(167,139,250,.35);
+  transition:transform .2s, box-shadow .2s;
 }
-.go-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(167,139,250,.42)}
-.go-btn:active{transform:translateY(0)}
-/* GAME */
-.game{display:flex;flex-direction:column;gap:13px;padding-top:6px}
+.go-btn:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(167,139,250,.5)}
+.go-btn:active{transform:translateY(-1px)}
+
+/* GAME AREA & HUDS */
+.game{display:flex;flex-direction:column;gap:18px;padding-top:6px}
 .tbar{
   display:flex;align-items:center;justify-content:space-between;
-  padding:11px 17px;
-  background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:13px;
+  padding:14px 20px;
+  background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:16px;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
 }
-.hts{display:flex;gap:3px;font-size:.92rem}
-.pts{font-size:1.15rem;font-weight:800;color:#a78bfa}
+.hts{display:flex;gap:5px;font-size:1.05rem;filter:drop-shadow(0 2px 4px rgba(239,68,68,0.2))}
+.pts{font-size:1.25rem;font-weight:800;color:#c4b5fd;text-shadow:0 0 10px rgba(167,139,250,0.3)}
 .stk{
-  font-size:.71rem;font-weight:700;color:#fbbf24;
-  background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.18);
-  padding:3px 10px;border-radius:99px;display:none;
+  font-size:.75rem;font-weight:800;color:#f59e0b;
+  background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);
+  padding:4px 12px;border-radius:99px;display:none;
+  box-shadow:0 2px 8px rgba(245,158,11,0.15);
 }
-.prg-bar{background:rgba(255,255,255,.06);border-radius:99px;height:5px;overflow:hidden}
-.prg-fill{height:100%;background:linear-gradient(90deg,#a78bfa,#f472b6);border-radius:99px;transition:width .55s cubic-bezier(.4,0,.2,1);width:0%}
-.prg-lbl{font-size:.6rem;color:#4a3a6b;font-weight:700;margin-top:5px;text-align:right;letter-spacing:1px}
-.card{background:#150c22;border:1px solid rgba(255,255,255,.07);border-radius:17px;padding:22px;min-height:180px}
-@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.q-inner{animation:cardIn .28s ease}
+
+.prg-bar{background:rgba(255,255,255,.04);border-radius:99px;height:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.02)}
+.prg-fill{height:100%;background:linear-gradient(90deg,#a78bfa,#f472b6);border-radius:99px;transition:width .45s cubic-bezier(.4,0,.2,1);width:0%}
+.prg-lbl{font-size:.65rem;color:#5a4c7a;font-weight:700;margin-top:6px;text-align:right;letter-spacing:1px}
+
+/* THE CONTAINER CARD */
+.card{
+  background:radial-gradient(circle at top left, #170f28, #110a20);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:24px;padding:26px;min-height:200px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.3);
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.q-inner{animation:cardIn .3s cubic-bezier(0.4, 0, 0.2, 1)}
+
+/* LOADING LOOPER */
 @keyframes spin{to{transform:rotate(360deg)}}
-.ld{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:46px 0;gap:13px}
-.sp{width:32px;height:32px;border:3px solid rgba(167,139,250,.16);border-top-color:#a78bfa;border-radius:50%;animation:spin .65s linear infinite}
-.ld-t{font-size:.67rem;color:#6a5a8b;font-weight:700;letter-spacing:2px;text-transform:uppercase}
-.q-topic{font-size:.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;margin-bottom:10px;opacity:.8}
-.qt{font-size:.98rem;font-weight:600;line-height:1.72;color:#e8def8;margin-bottom:16px}
-.opts{display:flex;flex-direction:column;gap:8px}
+.ld{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 0;gap:16px}
+.sp{width:36px;height:36px;border:3.5px solid rgba(167,139,250,.12);border-top-color:#a78bfa;border-radius:50%;animation:spin .6s linear infinite}
+.ld-t{font-size:.7rem;color:#756599;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+
+.q-topic{font-size:.62rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;margin-bottom:12px;opacity:.9}
+.qt{font-size:1.1rem;font-weight:600;line-height:1.7;color:#f1ecfb;margin-bottom:20px}
+
+/* OPTIONS BEAUTIFICATION */
+.opts{display:flex;flex-direction:column;gap:10px}
 .opt{
-  display:flex;align-items:center;gap:11px;padding:12px 15px;
-  background:rgba(255,255,255,.025);border:1.5px solid rgba(255,255,255,.07);
-  border-radius:10px;cursor:pointer;color:#e8def8;
-  font-family:inherit;font-size:.85rem;font-weight:500;
-  text-align:left;transition:background .13s,border-color .13s;width:100%;
+  display:flex;align-items:center;gap:14px;padding:14px 18px;
+  background:rgba(255,255,255,.015);border:1.5px solid rgba(255,255,255,.05);
+  border-radius:14px;cursor:pointer;color:#e2d9f3;
+  font-family:inherit;font-size:.9rem;font-weight:600;
+  text-align:left;transition:all .15s cubic-bezier(0.4, 0, 0.2, 1);width:100%;
 }
-.opt:not([disabled]):hover{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.26)}
+.opt:not([disabled]):hover{
+  background:rgba(167,139,250,.07);
+  border-color:rgba(167,139,250,.35);
+  color:#ffffff;
+  transform:translateX(4px);
+}
 .opt[disabled]{cursor:default}
-.opt.ok{background:rgba(34,197,94,.1);border-color:#22c55e;color:#86efac}
-.opt.ng{background:rgba(239,68,68,.1);border-color:#ef4444;color:#fca5a5}
-.opt.dm{opacity:.28}
+
+/* FEEDBACK COLORS STATE */
+.opt.ok{background:rgba(34,197,94,.08);border-color:#22c55e;color:#a7f3d0;box-shadow:0 0 14px rgba(34,197,94,0.15)}
+.opt.ng{background:rgba(239,68,68,.08);border-color:#ef4444;color:#fca5a5;box-shadow:0 0 14px rgba(239,68,68,0.15)}
+.opt.dm{opacity:.22;transform:scale(0.98)}
+
 .opt-l{
-  min-width:24px;height:24px;border-radius:5px;
+  min-width:26px;height:26px;border-radius:8px;
   display:flex;align-items:center;justify-content:center;
-  font-size:.67rem;font-weight:800;flex-shrink:0;
-  background:rgba(255,255,255,.06);color:#6a5a8b;
+  font-size:.72rem;font-weight:800;flex-shrink:0;
+  background:rgba(255,255,255,.04);color:#7f6eab;
+  transition:all .15s;
 }
-.opt.ok .opt-l{background:rgba(34,197,94,.2);color:#22c55e}
-.opt.ng .opt-l{background:rgba(239,68,68,.2);color:#ef4444}
-/* fill-in-the-blank */
-.fill-row{display:flex;gap:8px}
+.opt:hover .opt-l{background:rgba(167,139,250,0.15);color:#c4b5fd}
+.opt.ok .opt-l{background:rgba(34,197,94,.15);color:#22c55e}
+.opt.ng .opt-l{background:rgba(239,68,68,.15);color:#ef4444}
+
+/* INPUT BLANKS TYPE CSS */
+.fill-row{display:flex;gap:10px}
 .fill-in{
-  flex:1;padding:13px 15px;
-  background:rgba(255,255,255,.025);border:1.5px solid rgba(255,255,255,.1);
-  border-radius:10px;color:#f1ecfb;font-family:inherit;font-size:.92rem;font-weight:600;
-  outline:none;transition:border-color .13s;
+  flex:1;padding:14px 18px;
+  background:rgba(255,255,255,.015);border:1.5px solid rgba(255,255,255,.06);
+  border-radius:14px;color:#ffffff;font-family:inherit;font-size:.95rem;font-weight:600;
+  outline:none;transition:all .15s;
 }
-.fill-in:focus{border-color:#a78bfa;background:rgba(167,139,250,.06)}
-.fill-in.ok{border-color:#22c55e;background:rgba(34,197,94,.1);color:#86efac}
-.fill-in.ng{border-color:#ef4444;background:rgba(239,68,68,.1);color:#fca5a5}
+.fill-in:focus{border-color:#a78bfa;background:rgba(167,139,250,.04);box-shadow:0 0 12px rgba(167,139,250,0.15)}
+.fill-in.ok{border-color:#22c55e;background:rgba(34,197,94,.08);color:#a7f3d0}
+.fill-in.ng{border-color:#ef4444;background:rgba(239,68,68,.08);color:#fca5a5}
 .fill-go{
-  padding:0 20px;background:linear-gradient(118deg,#a78bfa,#f472b6);
-  border:none;border-radius:10px;color:#15071a;font-family:inherit;
-  font-size:.8rem;font-weight:800;letter-spacing:1px;cursor:pointer;
+  padding:0 24px;background:linear-gradient(135deg,#a78bfa,#f472b6);
+  border:none;border-radius:14px;color:#0e0618;font-family:inherit;
+  font-size:.82rem;font-weight:800;letter-spacing:1px;cursor:pointer;
+  transition:opacity .15s, transform .15s;
 }
-.fill-go[disabled]{opacity:.4;cursor:default}
-.ans-reveal{margin-top:10px;font-size:.8rem;color:#86efac;font-weight:600}
-@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.fill-go:hover:not([disabled]){transform:scale(1.02)}
+.fill-go[disabled]{opacity:.3;cursor:default}
+
+.ans-reveal{margin-top:12px;font-size:.85rem;color:#34d399;font-weight:700;letter-spacing:0.5px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .expl{
-  margin-top:12px;padding:11px 14px;
-  background:rgba(167,139,250,.05);border:1px solid rgba(167,139,250,.12);
-  border-radius:9px;font-size:.79rem;color:#9a8aba;line-height:1.67;display:none;
-  animation:fadeUp .28s ease;
+  margin-top:16px;padding:14px 18px;
+  background:rgba(167,139,250,.04);border:1px solid rgba(167,139,250,.1);
+  border-radius:12px;font-size:.82rem;color:#a394c2;line-height:1.65;display:none;
+  animation:fadeUp .25s ease;
 }
-.expl-ok{color:#22c55e;font-weight:700}
-.expl-ng{color:#ef4444;font-weight:700}
+.expl-ok{color:#34d399;font-weight:800}
+.expl-ng{color:#f87171;font-weight:800}
+
 .nx-btn{
-  width:100%;padding:15px;background:linear-gradient(118deg,#a78bfa,#f472b6);
-  border:none;border-radius:12px;color:#15071a;
-  font-family:inherit;font-size:.86rem;font-weight:800;letter-spacing:1.5px;
-  cursor:pointer;box-shadow:0 3px 14px rgba(167,139,250,.22);
-  transition:transform .13s,box-shadow .13s;display:none;
+  width:100%;padding:16px;background:linear-gradient(135deg,#a78bfa,#f472b6);
+  border:none;border-radius:14px;color:#0e0618;
+  font-family:inherit;font-size:.9rem;font-weight:800;letter-spacing:1.5px;
+  cursor:pointer;box-shadow:0 4px 18px rgba(167,139,250,.25);
+  transition:all .15s;display:none;
 }
-.nx-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(167,139,250,.32)}
-/* END */
-.end{display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px;padding:40px 0}
-.end-ic{font-size:3.5rem}
+.nx-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(167,139,250,.4)}
+
+/* END SCORE CARD VIEW */
+.end{display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px;padding:30px 0}
+.end-ic{font-size:4.2rem;filter:drop-shadow(0 4px 12px rgba(245,158,11,0.2))}
 .end-ti{
-  font-size:2rem;font-weight:800;letter-spacing:-.5px;
-  background:linear-gradient(118deg,#a78bfa,#f472b6);
+  font-size:2.2rem;font-weight:900;letter-spacing:-0.5px;
+  background:linear-gradient(135deg,#a78bfa,#f472b6);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.end-sc{font-size:3rem;font-weight:800;color:#fbbf24;line-height:1}
-.end-sl{font-size:.6rem;color:#4a3a6b;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-top:5px}
-.end-grade{font-size:.85rem;font-weight:700;color:#c4b5fd}
-.st-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.st{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 18px;min-width:90px}
-.st-v{font-size:1.3rem;font-weight:800;color:#a78bfa}
-.st-l{font-size:.58rem;color:#4a3a6b;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:3px}
-.pa-btn{
-  padding:15px 42px;background:linear-gradient(118deg,#a78bfa,#f472b6);
-  border:none;border-radius:12px;color:#15071a;
-  font-family:inherit;font-size:.86rem;font-weight:800;letter-spacing:1.5px;
-  cursor:pointer;box-shadow:0 4px 18px rgba(167,139,250,.3);
-  transition:transform .14s,box-shadow .14s;
+.end-sc{font-size:3.6rem;font-weight:900;color:#fbbf24;line-height:1;text-shadow:0 0 20px rgba(251,191,36,0.25)}
+.end-sl{font-size:.65rem;color:#5a4a7b;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-top:6px}
+.end-grade{font-size:.92rem;font-weight:700;color:#c4b5fd}
+
+.st-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:8px 0}
+.st{
+  background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.05);
+  border-radius:16px;padding:16px 20px;min-width:105px;backdrop-filter:blur(4px);
 }
-.pa-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(167,139,250,.42)}
-.footer{text-align:center;font-size:.58rem;color:#33274d;margin-top:6px;letter-spacing:.5px}
+.st-v{font-size:1.4rem;font-weight:800;color:#ffffff}
+.st-l{font-size:.6rem;color:#5a4a7b;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+
+.pa-btn{
+  padding:16px 48px;background:linear-gradient(135deg,#a78bfa,#f472b6);
+  border:none;border-radius:14px;color:#0e0618;
+  font-family:inherit;font-size:.9rem;font-weight:800;letter-spacing:1.5px;
+  cursor:pointer;box-shadow:0 4px 18px rgba(167,139,250,.3);
+  transition:all .15s;
+}
+.pa-btn:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(167,139,250,.45)}
+
+.footer{text-align:center;font-size:.62rem;color:#3f325c;margin-top:14px;letter-spacing:1px;font-weight:600}
+
+/* HIGH PERFORMANCE FLOATING PARTICLES */
+.bg-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: -1;
+  color: var(--particle-glow, rgba(167, 139, 250, 0.2));
+  font-family: 'Segoe UI', system-ui, monospace;
+  font-weight: 800;
+  font-size: var(--size, 22px);
+  left: var(--x, 50%);
+  top: 100vh;
+  will-change: transform, opacity;
+  animation: floatUp var(--duration, 5s) cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+  text-shadow: 0 0 10px var(--particle-glow, rgba(167, 139, 250, 0.1));
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(0.6) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+    transform: translateY(-20vh) scale(1) rotate(45deg);
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-125vh) scale(0.7) rotate(270deg);
+    opacity: 0;
+  }
+}
 </style>
 </head>
 <body>
 <div id="app"></div>
 
-<!-- ============================================================
-     QUESTION BANK — Class 9 CBSE / NCERT
-     Each entry: {sub, diff, topic, question, options[], correct, explanation}
-     Fully offline — no server, no API key, no internet needed.
-     ============================================================ -->
 <script>
-/* ============================================================================
-   ClassQuest — Question Bank  (Class 9 · CBSE / NCERT)
-   ----------------------------------------------------------------------------
-   Common fields for EVERY question:
-     sub         subject (must match a name in SUBJECTS)
-     diff        'Beginner' | 'Intermediate' | 'Advanced'
-     topic       chapter name (used as the chapter filter)
-     question    the question text
-     explanation short note shown after answering   (optional)
-
-   THREE question types are supported. Set 'type' to one of: 'mcq' | 'tf' | 'fill'
-   (if you leave 'type' out, it is auto-detected).
-
-   1) MCQ  → multiple choice
-      {sub:'Maths', diff:'Beginner', topic:'The World of Numbers', type:'mcq',
-       question:'Which of these is irrational?',
-       options:['√2','0.25','3/7','−5'],
-       correct:0,                      // index (0-based) of the right option
-       explanation:'√2 is non-terminating, non-repeating.'}
-
-   2) TRUE / FALSE
-      {sub:'Science', diff:'Beginner', topic:'Sound Waves: Characteristics and Applications',
-       type:'tf',
-       question:'Sound can travel through vacuum.',
-       answer:false,                   // true or false
-       explanation:'Sound needs a medium to travel.'}
-
-   3) FILL IN THE BLANK
-      {sub:'Maths', diff:'Beginner', topic:'The World of Numbers',
-       type:'fill',
-       question:'The value of π up to two decimals is ____.',
-       answer:'3.14',                  // the correct answer (case-insensitive)
-       accept:['3.14159'],             // optional: extra accepted answers
-       explanation:'π ≈ 3.14.'}
-   ============================================================================ */
-/* ----------------------------------------------------------------------------
-   CHAPTERS — the official book chapter list for each subject.
-   Whatever is listed here shows up as a chapter button (even chapters that
-   don't have questions yet). Subjects not listed here fall back to deriving
-   chapters from the question bank automatically.
-
-   A subject can be EITHER:
-     • a flat array of chapter names, OR
-     • an object of groups:  { "Physics": [...], "Chemistry": [...], ... }
-       (used for Science, which shows Physics / Chemistry / Biology groups).
-   ---------------------------------------------------------------------------- */
 window.CHAPTERS = {
-  // Maths (Ganita Manjari)
   'Maths': [
     'Orienting Yourself: The Use of Coordinates',
     'Introduction to Linear Polynomials',
@@ -280,8 +381,6 @@ window.CHAPTERS = {
     'The Mathematics of Maybe: Introduction to Probability',
     'Predicting What Comes Next: Exploring Sequences and Progressions'
   ],
-
-  // Science (Exploration) — grouped into Physics / Chemistry / Biology
   'Science': {
     'Physics': [
       'Describing Motion Around Us',
@@ -305,8 +404,6 @@ window.CHAPTERS = {
       'Exploration: Entering the World of Secondary Science'
     ]
   },
-
-  // English (Kaveri) — single book, 16 chapters
   'English': [
     'How I Taught My Grandmother to Read',
     'The Pot Maker',
@@ -325,8 +422,6 @@ window.CHAPTERS = {
     'Believe in Yourself',
     'Words'
   ],
-
-  // Hindi (Ganga) — single book, 12 chapters
   'Hindi': [
     'दो बैलों की कथा',
     'क्या लिखूं?',
@@ -343,37 +438,241 @@ window.CHAPTERS = {
   ]
 };
 
-
-/* ----------------------------------------------------------------------------
-   QUESTION_BANK — add your questions here (MCQ / True-False / Fill-in-the-blank).
-   See the format examples in the header comment above. Empty for now.
-   ---------------------------------------------------------------------------- */
 window.QUESTION_BANK = [
-
+  {
+    sub: 'Maths',
+    diff: 'Beginner',
+    topic: 'The World of Numbers',
+    type: 'mcq',
+    question: 'Which of the following is an irrational number?',
+    options: ['√4', '3.14', '√7', '22/7'],
+    correct: 2,
+    explanation: '√7 is irrational because 7 is not a perfect square, making its decimal expansion non-terminating and non-recurring.'
+  },
+  {
+    sub: 'Maths',
+    diff: 'Intermediate',
+    topic: 'The World of Numbers',
+    type: 'fill',
+    question: 'The rationalized form of the denominator for 1 / (√5 - 2) is ____.',
+    answer: '√5+2',
+    accept: ['√5 + 2', '2+√5'],
+    explanation: 'Multiply numerator and denominator by the conjugate (√5 + 2). The denominator becomes (√5)² - 2² = 5 - 4 = 1.'
+  },
+  {
+    sub: 'Maths',
+    diff: 'Advanced',
+    topic: 'Exploring Algebraic Identities',
+    type: 'mcq',
+    question: 'If x + y + z = 0, then the value of x³ + y³ + z³ is equal to:',
+    options: ['0', 'xyz', '2xyz', '3xyz'],
+    correct: 3,
+    explanation: 'According to the algebraic identity, if x + y + z = 0, then x³ + y³ + z³ = 3xyz.'
+  },
+  {
+    sub: 'Maths',
+    diff: 'Beginner',
+    topic: 'Orienting Yourself: The Use of Coordinates',
+    type: 'tf',
+    question: 'The point (-3, -5) lies in the third quadrant (Quadrant III).',
+    answer: true,
+    explanation: 'In the third quadrant, both the x-coordinate (abscissa) and the y-coordinate (ordinate) are negative.'
+  },
+  {
+    sub: 'Maths',
+    diff: 'Intermediate',
+    topic: 'Introduction to Linear Polynomials',
+    type: 'mcq',
+    question: 'Any point on the line y = x is of the form:',
+    options: ['(a, 0)', '(0, a)', '(a, a)', '(a, -a)'],
+    correct: 2,
+    explanation: 'Since y equals x, the x and y coordinates must be identical, which corresponds to the form (a, a).'
+  },
+  {
+    sub: 'Maths',
+    diff: 'Advanced',
+    topic: "I'm Up and Down, and Round and Round",
+    type: 'tf',
+    question: 'An angle subtended by an arc at the centre of a circle is double the angle subtended by it at any point on the remaining part of the circle.',
+    answer: true,
+    explanation: 'This is a core circle theorem in Class 9 geometry.'
+  },
+  {
+    sub: 'Maths',
+    diff: 'Intermediate',
+    topic: 'Measuring Space: Perimeter and Area',
+    type: 'fill',
+    question: 'Using Heron\'s formula, the semi-perimeter (s) of a triangle with sides 6 cm, 8 cm, and 10 cm is ____ cm.',
+    answer: '12',
+    explanation: 'The semi-perimeter s = (a + b + c) / 2 = (6 + 8 + 10) / 2 = 24 / 2 = 12 cm.'
+  },
+  {
+    sub: 'Science',
+    diff: 'Beginner',
+    topic: 'Describing Motion Around Us',
+    type: 'mcq',
+    question: 'What does the slope of a distance-time graph represent?',
+    options: ['Acceleration', 'Speed', 'Displacement', 'Force'],
+    correct: 1,
+    explanation: 'The slope of a distance-time graph represents speed. (Slope of a displacement-time graph represents velocity).'
+  },
+  {
+    sub: 'Science',
+    diff: 'Intermediate',
+    topic: 'How Forces Affect Motion',
+    type: 'fill',
+    question: 'The mathematical expression of Newton\'s Second Law of Motion is F = ____.',
+    answer: 'ma',
+    accept: ['m*a', 'mass * acceleration'],
+    explanation: 'Force is directy proportional to the product of mass (m) and acceleration (a).'
+  },
+  {
+    sub: 'Science',
+    diff: 'Advanced',
+    topic: 'Work, Energy, and Simple Machines',
+    type: 'mcq',
+    question: 'An object of mass 4 kg is moving with a uniform velocity of 5 m/s. Its kinetic energy is:',
+    options: ['10 J', '20 J', '50 J', '100 J'],
+    correct: 2,
+    explanation: 'Kinetic Energy = 0.5 * m * v² = 0.5 * 4 * (5)² = 2 * 25 = 50 Joules.'
+  },
+  {
+    sub: 'Science',
+    diff: 'Beginner',
+    topic: 'Sound Waves: Characteristics and Applications',
+    type: 'tf',
+    question: 'Sound waves are longitudinal waves that require a material medium to propagate.',
+    answer: true,
+    explanation: 'Sound travels via compressions and rarefactions through solids, liquids, or gases, and cannot travel through a vacuum.'
+  },
+  {
+    sub: 'Science',
+    diff: 'Intermediate',
+    topic: 'Exploring Mixtures and their Separation',
+    type: 'mcq',
+    question: 'Which of the following is a homogeneous mixture?',
+    options: ['Salt dissolved in water', 'Sand and iron filings', 'Chalk powder in water', 'Oil and water'],
+    correct: 0,
+    explanation: 'Salt in water forms a true, uniform solution, which makes it a homogeneous mixture.'
+  },
+  {
+    sub: 'Science',
+    diff: 'Advanced',
+    topic: 'Journey Inside the Atom',
+    type: 'fill',
+    question: 'The subatomic particle discovered by J.J. Thomson is the ____.',
+    answer: 'electron',
+    accept: ['electrons'],
+    explanation: 'J.J. Thomson discovered electrons through his cathode ray tube experiment.'
+  },
+  {
+    sub: 'Science',
+    diff: 'Beginner',
+    topic: 'Atomic Foundations of Matter',
+    type: 'tf',
+    question: 'According to Dalton\'s atomic theory, atoms are divisible into smaller subatomic units.',
+    answer: false,
+    explanation: 'Dalton stated that atoms are indivisible particles. The discovery of electrons, protons, and neutrons later disproved this.'
+  },
+  {
+    sub: 'Science',
+    diff: 'Beginner',
+    topic: 'Cell: The Building Block of Life',
+    type: 'mcq',
+    question: 'Which organelle is known as the "Powerhouse of the Cell"?',
+    options: ['Golgi Apparatus', 'Lysosome', 'Mitochondria', 'Vacuole'],
+    correct: 2,
+    explanation: 'Mitochondria generate cellular energy in the form of ATP molecules.'
+  },
+  {
+    sub: 'Science',
+    diff: 'Intermediate',
+    topic: 'Tissues in Action',
+    type: 'mcq',
+    question: 'Which plant tissue is responsible for transporting food from leaves to other parts of the plant?',
+    options: ['Xylem', 'Phloem', 'Parenchyma', 'Sclerenchyma'],
+    correct: 1,
+    explanation: 'Phloem transports organic nutrients (food), while Xylem transports water and minerals.'
+  },
+  {
+    sub: 'English',
+    diff: 'Beginner',
+    topic: 'How I Taught My Grandmother to Read',
+    type: 'mcq',
+    question: 'Who is the author of the story "How I Taught My Grandmother to Read"?',
+    options: ['Ruskin Bond', 'Sudha Murty', 'R.K. Narayan', 'Vikram Seth'],
+    correct: 1,
+    explanation: 'Sudha Murty is the author, sharing a touching personal account of teaching her grandmother, Krishtakka.'
+  },
+  {
+    sub: 'English',
+    diff: 'Intermediate',
+    topic: 'How I Taught My Grandmother to Read',
+    type: 'fill',
+    question: 'The grandmother wanted to read the novel called Kashi ____.',
+    answer: 'Yatre',
+    accept: ['Yatra'],
+    explanation: 'The grandmother was deeply attached to the serial novel "Kashi Yatre" written by Triveni.'
+  },
+  {
+    sub: 'English',
+    diff: 'Beginner',
+    topic: 'Nine Gold Medals',
+    type: 'tf',
+    question: 'In the poem "Nine Gold Medals," all nine athletes stopped running to lift up a fallen contestant.',
+    answer: true,
+    explanation: 'True. Instead of competing, they turned back to help the smallest runner who stumbled and fell, demonstrating true sportsmanship.'
+  },
+  {
+    sub: 'Hindi',
+    diff: 'Beginner',
+    topic: 'दो बैलों की कथा',
+    type: 'mcq',
+    question: 'प्रेमचंद द्वारा रचित कहानी "दो बैलों की कथा" में बैलों के नाम क्या हैं?',
+    options: ['सोना और चांदी', 'हीरा और मोती', 'जय और वीरू', 'राम और श्याम'],
+    correct: 1,
+    explanation: 'कहानी के मुख्य पात्र दो बैल हैं जिनका नाम हीरा और मोती है।'
+  },
+  {
+    sub: 'Hindi',
+    diff: 'Intermediate',
+    topic: 'दो बैलों की कथा',
+    type: 'fill',
+    question: 'हीरा और मोती के स्वामी (मालिक) का नाम ____ था।',
+    answer: 'झूरी',
+    accept: ['झूरी काछी'],
+    explanation: 'बैलों का दयालु मालिक झूरी था, जो उनसे बेहद प्यार करता था।'
+  },
+  {
+    sub: 'Hindi',
+    diff: 'Beginner',
+    topic: 'रीढ़ की हड्डी',
+    type: 'tf',
+    question: '"रीढ़ की हड्डी" एकांकी के माध्यम से लेखक ने समाज में लड़कियों की शिक्षा और उनके स्वाभिमान के मुद्दे को उठाया है।',
+    answer: true,
+    explanation: 'यह नाटक नारी शिक्षा के महत्व और समाज की दकियानूसी मानसिकता पर प्रहार करता है।'
+  }
 ];
-
 </script>
 
 <script>
 const SUBJECTS = [
-  {name:'Maths',     em:'📐'},
-  {name:'Science',   em:'🔬'},
-  {name:'History',   em:'🏛️'},
+  {name:'Maths',      em:'📐'},
+  {name:'Science',    em:'🔬'},
+  {name:'History',    em:'🏛️'},
   {name:'Geography', em:'🌍'},
   {name:'Civics',    em:'⚖️'},
   {name:'Economics', em:'💰'},
-  {name:'English',   em:'📖'},
-  {name:'Hindi',     em:'🪔'}
+  {name:'English',    em:'📖'},
+  {name:'Hindi',      em:'🪔'}
 ];
 
 const DIFFS = [
-  {name:'Beginner',     ic:'🌱',ds:'Recall & basics'},
+  {name:'Beginner',   ic:'🌱',ds:'Recall & basics'},
   {name:'Intermediate', ic:'⚙️',ds:'Apply & connect'},
   {name:'Advanced',     ic:'🔥',ds:'Think deeper'}
 ];
 
-/* Question types the player can pick on the home screen.
-   'Mixed' = any type. The others restrict the quiz to one type. */
 const TYPES = [
   {name:'Mixed',      val:'mixed', ic:'🎲', ds:'All types'},
   {name:'MCQ',        val:'mcq',   ic:'🔘', ds:'Multiple choice'},
@@ -381,25 +680,73 @@ const TYPES = [
   {name:'True/False', val:'tf',    ic:'✅', ds:'True or false'}
 ];
 
-/* Default number of questions. The player can change this on the home
-   screen (G.total). TOTAL stays as the default/initial value. */
 const TOTAL = 10;
-const MAX_TOTAL = 50;   // upper safety cap for the custom count
+const MAX_TOTAL = 50;
 
 let G = {
   sub:'Maths', diff:'Beginner', qtype:'mixed', topics:[], total:TOTAL,
   q:null, sel:null, fb:null,
   score:0, lives:3, streak:0, best:0,
   qn:0, hits:0, used:[], pool:[],
-  recent:[],            // last few question texts, sent to AI to avoid repeats
-  aiAvailable:false,    // detected at boot via /api/status
+  recent:[],
+  aiAvailable:false,
   loading:false
 };
 
-/* ── AI helpers ──────────────────────────────────────────────────────────
-   Ask our own backend whether an AI key is configured. If yes, we fetch
-   fresh questions from /api/question; if anything fails we silently fall
-   back to the offline question bank so the game never breaks. */
+/* Floating Elements & Dynamic BG Generator for All Subjects */
+function triggerBackgroundParticles(subject) {
+  const oldParticles = document.querySelectorAll('.bg-particle');
+  oldParticles.forEach(p => p.remove());
+
+  let symbols = [];
+  let glowColor = 'rgba(167, 139, 250, 0.2)';
+
+  if (subject === 'Maths') {
+    symbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'x', 'y', 'z', '+', '−', '=', '√', 'π', '%', 'θ'];
+    glowColor = 'rgba(167, 139, 250, 0.25)';
+  } else if (subject === 'Science') {
+    symbols = ['⚛', '🔬', 'H₂O', 'CO₂', 'E=mc²', '🧪', '🧬', '⚡', '⚗️', 'O₂', 'N', '☄️', '🦠'];
+    glowColor = 'rgba(52, 211, 153, 0.2)'; 
+  } else if (subject === 'English') {
+    symbols = ['A', 'B', 'C', '✍️', '📖', '📝', '"', '?', '!', '✒️', 'T', 'R', 'Y'];
+    glowColor = 'rgba(244, 114, 182, 0.2)'; 
+  } else if (subject === 'Hindi') {
+    symbols = ['क', 'ख', 'ग', 'घ', 'अ', 'आ', 'इ', 'उ', '🪔', '✍️', '📜', '📖'];
+    glowColor = 'rgba(251, 146, 60, 0.2)'; 
+  } else if (subject === 'History') {
+    symbols = ['🏛️', '📜', '⏳', '👑', '🛡️', '⚔️', '🏹', '🏰', '🗿'];
+    glowColor = 'rgba(251, 191, 36, 0.2)'; 
+  } else if (subject === 'Geography') {
+    symbols = ['🌍', '🗺️', '🧭', '🌋', '🏔️', '🌧️', '☀️', '🌌', '🏕️'];
+    glowColor = 'rgba(96, 165, 250, 0.2)'; 
+  } else if (subject === 'Civics') {
+    symbols = ['⚖️', '🏛️', '🤝', '🗳️', '📜', '🕊️', '🏢'];
+    glowColor = 'rgba(45, 212, 191, 0.2)'; 
+  } else if (subject === 'Economics') {
+    symbols = ['💰', '📈', '📉', '🪙', '📊', '💳', '🏦', '💹'];
+    glowColor = 'rgba(34, 197, 94, 0.2)'; 
+  }
+
+  document.body.style.setProperty('--subject-glow', glowColor);
+
+  for (let i = 0; i < 25; i++) {
+    setTimeout(() => {
+      const p = document.createElement('div');
+      p.className = 'bg-particle';
+      p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      
+      p.style.setProperty('--x', Math.random() * 100 + 'vw');
+      p.style.setProperty('--size', Math.random() * (34 - 16) + 16 + 'px');
+      p.style.setProperty('--duration', Math.random() * (7 - 4) + 4 + 's');
+      p.style.setProperty('--particle-glow', glowColor);
+      p.style.animationDelay = Math.random() * 2.5 + 's';
+      
+      document.body.appendChild(p);
+      p.addEventListener('animationend', () => p.remove());
+    }, i * 120);
+  }
+}
+
 async function detectAI(){
   try{
     const r = await fetch('/api/status', {cache:'no-store'});
@@ -420,27 +767,18 @@ async function fetchAIQuestion(){
     const j = await r.json();
     if(j && j.question && j.question.question){
       const q = j.question;
-      q.sub = G.sub; q.diff = G.diff;       // tag with current selection
+      q.sub = G.sub; q.diff = G.diff;
       return q;
     }
   }catch(_){}
   return null;
 }
 
-/* ── tiny helpers ── */
 const $ = id => document.getElementById(id);
 const app = html => { document.getElementById('app').innerHTML = html; };
-function h(s){ return String(s).replace(/[&<>"']/g, c => (
-  {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function h(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
-/* ── chapter helpers ──
-   CHAPTERS[sub] can be EITHER:
-     • a flat array of chapter names, OR
-     • an object of { "Group Name": [chapter, chapter, ...] } for grouping
-       (e.g. Science → Physics / Chemistry / Biology).
-   topicsFor() always returns a FLAT list of chapter names (for filtering),
-   groupsFor() returns the grouped form (or null if not grouped). */
 function groupsFor(sub){
   const c = window.CHAPTERS && window.CHAPTERS[sub];
   if (c && !Array.isArray(c) && typeof c === 'object') return c;
@@ -450,7 +788,6 @@ function topicsFor(sub){
   const c = window.CHAPTERS && window.CHAPTERS[sub];
   if (c) {
     if (Array.isArray(c)) return c;
-    // grouped object → flatten all groups into one list
     return Object.keys(c).reduce((acc,g)=>acc.concat(c[g]), []);
   }
   const bank = (window.QUESTION_BANK || []);
@@ -459,13 +796,18 @@ function topicsFor(sub){
   return set;
 }
 
-/* ── EVENT DELEGATION ── */
+/* EVENT DELEGATION */
 document.addEventListener('click', e=>{
   const t = e.target.closest('[data-a]');
   if(!t) return;
   const a = t.getAttribute('data-a');
   const v = t.getAttribute('data-v');
-  if(a==='sub'){ G.sub=v; G.topics=[]; renderHome(); }
+  if(a==='sub'){ 
+    G.sub=v; 
+    G.topics=[]; 
+    triggerBackgroundParticles(v);
+    renderHome(); 
+  }
   else if(a==='diff'){ G.diff=v; renderHome(); }
   else if(a==='qtype'){ G.qtype=v; renderHome(); }
   else if(a==='num'){ G.total=parseInt(v,10); renderHome(); }
@@ -478,9 +820,6 @@ document.addEventListener('click', e=>{
   else if(a==='home'){ renderHome(); }
 });
 
-/* ── custom "number of questions" input ──
-   We listen on the document so it keeps working after re-renders. We only
-   clamp+repaint when the field loses focus (so typing isn't interrupted). */
 document.addEventListener('input', e=>{
   if(e.target && e.target.id==='numin'){
     const n = parseInt(e.target.value,10);
@@ -492,11 +831,10 @@ document.addEventListener('change', e=>{
     let n = parseInt(e.target.value,10);
     if(isNaN(n)) n = TOTAL;
     G.total = Math.max(1, Math.min(MAX_TOTAL, n));
-    renderHome();          // repaint so the quick-pick buttons highlight correctly
+    renderHome();
   }
 });
 
-/* ── RENDER TOPICS (chapters) ── */
 function chapBtn(t){
   return `<button class="topic-btn${G.topics.includes(t)?' on':''}" data-a="topic" data-v="${h(t)}">${h(t)}</button>`;
 }
@@ -517,7 +855,6 @@ function renderTopics(){
 
   let body;
   if(groups){
-    // grouped view: each group gets its own sub-heading + chapter pills
     body = Object.keys(groups).map(g=>`
       <div class="grp">
         <div class="grp-h">${h(g)}</div>
@@ -536,7 +873,6 @@ function toggleTopic(t){
   renderTopics();
 }
 
-/* ── RENDER HOME ── */
 function renderHome(){
   app(`<div class="home">
     <div class="brand">
@@ -593,7 +929,6 @@ function renderHome(){
   renderTopics();
 }
 
-/* ── RENDER GAME SHELL ── */
 function renderGameShell(){
   const topicLabel = G.topics.length>0 ? ` · ${G.topics.length} ch.` : '';
   app(`<div class="game">
@@ -611,7 +946,6 @@ function renderGameShell(){
   </div>`);
 }
 
-/* ── RENDER END ── */
 function renderEnd(win){
   const pct = G.qn>0 ? Math.round(G.hits/G.qn*100) : 0;
   let grade='Keep practising! 💪', ic = win?'🏆':'💀';
@@ -636,7 +970,6 @@ function renderEnd(win){
   </div>`);
 }
 
-/* ── UPDATE HUD ── */
 function hud(){
   const hts=$('hts'); if(hts) hts.textContent=[0,1,2].map(i=>i<G.lives?'❤️':'🖤').join('');
   const pts=$('pts'); if(pts) pts.textContent=`${G.score} pts`;
@@ -645,10 +978,6 @@ function hud(){
   const pl=$('pl');   if(pl){ const tl=G.topics.length>0?` · ${G.topics.length} ch.`:''; pl.textContent=`${G.sub}${tl} · ${G.diff} · Q${G.qn}/${G.total}`; }
 }
 
-/* ── BUILD THE POOL ── filter bank by subject+difficulty(+chapters),
-   gracefully broaden if too few match so the game never stalls. */
-/* Work out a question's type. If 'type' is missing we infer it:
-   has options[] → mcq, has true/false answer → tf, else fill. */
 function qType(q){
   if(q.type) return q.type;
   if(Array.isArray(q.options) && q.options.length) return 'mcq';
@@ -659,7 +988,6 @@ function qType(q){
 function buildPool(){
   const bank = (window.QUESTION_BANK || []);
   const bySub = bank.filter(q => q.sub === G.sub);
-  // honour the chosen question type ('mixed' = allow all)
   const typeOk = q => G.qtype==='mixed' || qType(q)===G.qtype;
 
   let pool = bySub.filter(q =>
@@ -667,15 +995,15 @@ function buildPool(){
     q.diff === G.diff &&
     (G.topics.length === 0 || G.topics.includes(q.topic))
   );
-  if (pool.length < G.total) {                     // broaden: drop chapter filter
+  if (pool.length < G.total) {
     const extra = bySub.filter(q => typeOk(q) && q.diff === G.diff && !pool.includes(q));
     pool = pool.concat(extra);
   }
-  if (pool.length < G.total) {                      // broaden: any difficulty (keep type)
+  if (pool.length < G.total) {
     const extra = bySub.filter(q => typeOk(q) && !pool.includes(q));
     pool = pool.concat(extra);
   }
-  if (pool.length === 0) pool = bank.slice();      // last resort: anything
+  if (pool.length === 0) pool = bank.slice();
   return shuffle(pool);
 }
 
@@ -687,7 +1015,6 @@ function pickFromBank(){
   return next || null;
 }
 
-/* ── RENDER CURRENT QUESTION ── */
 const TYPE_LABEL = {mcq:'MCQ', tf:'True / False', fill:'Fill in the blank'};
 function renderQuestion(){
   const card=$('card');
@@ -696,14 +1023,12 @@ function renderQuestion(){
 
   let bodyHTML;
   if(t==='fill'){
-    // Fill in the blank — text input + check button
     bodyHTML = `<div class="fill-row">
         <input class="fill-in" id="fillin" type="text" autocomplete="off"
                placeholder="Type your answer…" />
         <button class="fill-go" id="fillgo" data-a="submitFill">CHECK</button>
       </div>`;
   } else {
-    // MCQ or True/False — both render as clickable option buttons
     const opts = t==='tf' ? ['True','False'] : (G.q.options||[]);
     bodyHTML = `<div class="opts">
       ${opts.map((o,i)=>`
@@ -721,7 +1046,6 @@ function renderQuestion(){
     <div class="expl" id="expl"></div>
   </div>`;
 
-  // let Enter submit a fill-in answer
   if(t==='fill'){
     const inp=$('fillin');
     if(inp){
@@ -731,20 +1055,16 @@ function renderQuestion(){
   }
 }
 
-/* ── LOAD NEXT QUESTION ── */
 async function loadQ(){
   G.sel=null; G.fb=null; G.loading=true;
   const nx=$('nx'); if(nx) nx.style.display='none';
   const card=$('card'); if(card) card.innerHTML=loader();
 
   let q = null;
-
-  // 1) Try a fresh AI question when the server reports a key is set.
   if(G.aiAvailable) q = await fetchAIQuestion();
 
-  // 2) Fallback to the offline bank (also the default with no server).
   if(!q){
-    if(!G.aiAvailable) await new Promise(r=>setTimeout(r,250)); // tiny pause for UX
+    if(!G.aiAvailable) await new Promise(r=>setTimeout(r,250));
     q = pickFromBank();
   }
 
@@ -756,7 +1076,6 @@ async function loadQ(){
   }
 
   G.q=q; G.qn++;
-  // remember recent question text so the AI avoids repeats
   G.recent.push((q.question||'').slice(0,80));
   if(G.recent.length>8) G.recent.shift();
 
@@ -765,99 +1084,128 @@ async function loadQ(){
   G.loading=false;
 }
 
-/* spinner shown while a question loads (esp. while waiting on the AI) */
 function loader(){
   return `<div class="ld"><div class="sp"></div>
-    <div class="ld-t">${G.aiAvailable ? 'Generating question…' : 'Loading…'}</div></div>`;
-}
-
-/* Shared scoring + feedback after any answer.
-   isOk = was it right; revealText = optional "correct answer was…" line. */
-function scoreAnswer(isOk, revealText){
-  if(isOk){
-    G.score += G.streak>=2 ? 20 : 10;
-    G.streak++; G.best=Math.max(G.best,G.streak); G.hits++; G.fb='ok';
-  } else {
-    G.lives=Math.max(0,G.lives-1); G.streak=0; G.fb='ng';
-  }
-  hud();
-  setTimeout(()=>{
-    const expl=$('expl');
-    if(expl){
-      const tag = G.fb==='ok'
-        ? `<span class="expl-ok">✓ Correct! </span>`
-        : `<span class="expl-ng">✗ Incorrect. </span>`;
-      const reveal = (!isOk && revealText)
-        ? `<div class="ans-reveal">Answer: ${h(revealText)}</div>` : '';
-      expl.innerHTML = tag + (G.q.explanation ? h(G.q.explanation) : '') + reveal;
-      expl.style.display='block';
-    }
-    const nx=$('nx');
-    if(nx){ nx.textContent = (G.qn>=G.total || G.lives<=0) ? 'SEE RESULTS →' : 'NEXT QUESTION →'; nx.style.display='block'; }
-  },360);
-}
-
-/* ── HANDLE MCQ / TRUE-FALSE ANSWER ── */
-function answer(idx){
-  if(G.sel!==null||!G.q) return;
-  const t = qType(G.q);
-  const opts = t==='tf' ? ['True','False'] : (G.q.options||[]);
-  if(idx<0||idx>=opts.length) return;
-
-  // correct index: TF uses q.answer (true/false), MCQ uses q.correct
-  const correct = t==='tf' ? (G.q.answer===true ? 0 : 1) : G.q.correct;
-  const isOk = idx===correct;
-  G.sel=idx;
-
-  document.querySelectorAll('.opt').forEach((btn,i)=>{
-    btn.disabled=true;
-    if(i===correct)        btn.className='opt ok';
-    else if(i===idx)       btn.className='opt ng';
-    else                   btn.className='opt dm';
-  });
-
-  scoreAnswer(isOk, opts[correct]);
-}
-
-/* ── HANDLE FILL-IN-THE-BLANK ANSWER ──
-   Accepts q.answer (string) and optional q.accept (array of extra valid answers).
-   Matching is case-insensitive and ignores surrounding spaces. */
-function submitFill(){
-  if(G.sel!==null||!G.q) return;
-  const inp=$('fillin'); if(!inp) return;
-  const typed=(inp.value||'').trim();
-  if(!typed) return;                 // ignore empty submits
-  G.sel=typed;
-
-  const norm = s => String(s).trim().toLowerCase().replace(/\s+/g,' ');
-  const valid = [G.q.answer].concat(G.q.accept||[]).filter(x=>x!=null).map(norm);
-  const isOk = valid.includes(norm(typed));
-
-  inp.disabled=true;
-  inp.className='fill-in '+(isOk?'ok':'ng');
-  const go=$('fillgo'); if(go) go.disabled=true;
-
-  scoreAnswer(isOk, G.q.answer);
-}
-
-/* ── NEXT / START ── */
-function next(){
-  if(G.lives<=0)  { renderEnd(false); return; }
-  if(G.qn>=G.total) { renderEnd(true);  return; }
-  loadQ();
+    <div class="ld-t">${G.aiAvailable ? 'Generating question…' : 'Loading question…'}</div></div>`;
 }
 
 function startGame(){
-  Object.assign(G,{score:0,lives:3,streak:0,best:0,qn:0,hits:0,used:[],recent:[],q:null,sel:null,fb:null});
-  G.pool = buildPool();
+  G.score=0; G.lives=3; G.streak=0; G.best=0; G.qn=0; G.hits=0; G.used=[]; G.pool=[]; G.recent=[];
   renderGameShell();
   loadQ();
 }
 
-/* ── BOOT ── */
-renderHome();
-detectAI().then(()=>renderHome());   // re-render once we know if AI is on
+function answer(idx){
+  if(G.loading || G.sel!==null) return;
+  G.sel = idx;
+  
+  const t = qType(G.q);
+  let isCorrect = false;
+  
+  if(t==='tf'){
+    const userAns = (idx === 0);
+    isCorrect = (userAns === G.q.answer);
+  } else {
+    isCorrect = (idx === G.q.correct);
+  }
+  
+  revealFeedback(isCorrect, idx);
+}
+
+function submitFill(){
+  if(G.loading || G.sel!==null) return;
+  const inp = $('fillin');
+  if(!inp) return;
+  const txt = inp.value.trim().toLowerCase();
+  if(!txt) return;
+  
+  G.sel = txt;
+  
+  const correctTxt = String(G.q.answer).trim().toLowerCase();
+  let isCorrect = (txt === correctTxt);
+  
+  if(!isCorrect && Array.isArray(G.q.accept)){
+    isCorrect = G.q.accept.some(alt => String(alt).trim().toLowerCase() === txt);
+  }
+  
+  revealFeedback(isCorrect, null);
+}
+
+function revealFeedback(ok, idx){
+  const t = qType(G.q);
+  G.fb = ok;
+  
+  if(ok){
+    G.hits++;
+    G.streak++;
+    if(G.streak > G.best) G.best = G.streak;
+    G.score += (G.streak >= 3) ? 20 : 10;
+  } else {
+    G.streak = 0;
+    G.lives--;
+  }
+  
+  hud();
+
+  if(t==='fill'){
+    const inp = $('fillin');
+    const go = $('fillgo');
+    if(inp && go){
+      inp.disabled = true;
+      go.disabled = true;
+      inp.className = 'fill-in ' + (ok ? 'ok' : 'ng');
+      if(!ok){
+        const rev = document.createElement('div');
+        rev.className = 'ans-reveal';
+        rev.textContent = `Correct answer: ${G.q.answer}`;
+        inp.parentNode.parentNode.insertBefore(rev, $('expl'));
+      }
+    }
+  } else {
+    const btns = document.querySelectorAll('.opt');
+    btns.forEach((b, i) => {
+      b.disabled = true;
+      if(t==='tf'){
+        const isTrueBtnCorrect = G.q.answer === true;
+        if(i === (isTrueBtnCorrect ? 0 : 1)) b.classList.add('ok');
+        else if(i === idx) b.classList.add('ng');
+        else b.classList.add('dm');
+      } else {
+        if(i === G.q.correct) b.classList.add('ok');
+        else if(i === idx) b.classList.add('ng');
+        else b.classList.add('dm');
+      }
+    });
+  }
+
+  const expl = $('expl');
+  if(expl){
+    let txt = G.q.explanation || '';
+    expl.innerHTML = `<span class="${ok?'expl-ok':'expl-ng'}">${ok?'✓ Correct!':'✗ Incorrect.'}</span>${txt?`<br><br>${h(txt)}`:''}`;
+    expl.style.display = 'block';
+  }
+
+  const nx = $('nx');
+  if(nx) nx.style.display = 'block';
+}
+
+function next(){
+  if(G.lives <= 0){
+    renderEnd(false);
+  } else if(G.qn >= G.total){
+    renderEnd(true);
+  } else {
+    loadQ();
+  }
+}
+
+// Initial Bootup Setup
+window.addEventListener('DOMContentLoaded', ()=>{
+  detectAI().then(() => {
+    renderHome();
+    triggerBackgroundParticles('Maths'); // Initial boot default theme
+  });
+});
 </script>
 </body>
 </html>
-
