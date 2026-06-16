@@ -69,6 +69,23 @@ body{
 .df-row{display:flex;gap:8px}
 .qt-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 @media(max-width:480px){.qt-row{grid-template-columns:repeat(2,1fr)}}
+.num-row{display:flex;gap:8px;flex-wrap:wrap}
+.num-btn{
+  flex:1;min-width:54px;padding:12px 8px;text-align:center;
+  background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.07);
+  border-radius:12px;cursor:pointer;color:#f1ecfb;font-family:inherit;
+  font-size:.9rem;font-weight:800;transition:all .14s;
+}
+.num-btn:hover{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.28)}
+.num-btn.on{background:rgba(167,139,250,.14);border-color:#a78bfa;box-shadow:0 0 14px rgba(167,139,250,.18)}
+.num-in{
+  flex:1;min-width:80px;padding:12px 14px;
+  background:rgba(255,255,255,.03);border:1.5px solid rgba(255,255,255,.1);
+  border-radius:12px;color:#f1ecfb;font-family:inherit;font-size:.86rem;font-weight:700;
+  outline:none;transition:border-color .14s;
+}
+.num-in:focus{border-color:#a78bfa;background:rgba(167,139,250,.06)}
+.num-in::placeholder{color:#5a4a7b;font-weight:600}
 .df-btn{flex:1;padding:14px 10px;text-align:center}
 .df-ic{font-size:1.1rem;display:block;margin-bottom:3px}
 .df-nm{font-size:.77rem;font-weight:700;display:block}
@@ -364,10 +381,13 @@ const TYPES = [
   {name:'True/False', val:'tf',    ic:'✅', ds:'True or false'}
 ];
 
+/* Default number of questions. The player can change this on the home
+   screen (G.total). TOTAL stays as the default/initial value. */
 const TOTAL = 10;
+const MAX_TOTAL = 50;   // upper safety cap for the custom count
 
 let G = {
-  sub:'Maths', diff:'Beginner', qtype:'mixed', topics:[],
+  sub:'Maths', diff:'Beginner', qtype:'mixed', topics:[], total:TOTAL,
   q:null, sel:null, fb:null,
   score:0, lives:3, streak:0, best:0,
   qn:0, hits:0, used:[], pool:[],
@@ -448,6 +468,7 @@ document.addEventListener('click', e=>{
   if(a==='sub'){ G.sub=v; G.topics=[]; renderHome(); }
   else if(a==='diff'){ G.diff=v; renderHome(); }
   else if(a==='qtype'){ G.qtype=v; renderHome(); }
+  else if(a==='num'){ G.total=parseInt(v,10); renderHome(); }
   else if(a==='topic'){ toggleTopic(v); }
   else if(a==='clearTopics'){ G.topics=[]; renderTopics(); }
   else if(a==='start'){ startGame(); }
@@ -455,6 +476,24 @@ document.addEventListener('click', e=>{
   else if(a==='submitFill'){ submitFill(); }
   else if(a==='next'){ next(); }
   else if(a==='home'){ renderHome(); }
+});
+
+/* ── custom "number of questions" input ──
+   We listen on the document so it keeps working after re-renders. We only
+   clamp+repaint when the field loses focus (so typing isn't interrupted). */
+document.addEventListener('input', e=>{
+  if(e.target && e.target.id==='numin'){
+    const n = parseInt(e.target.value,10);
+    if(!isNaN(n)) G.total = Math.max(1, Math.min(MAX_TOTAL, n));
+  }
+});
+document.addEventListener('change', e=>{
+  if(e.target && e.target.id==='numin'){
+    let n = parseInt(e.target.value,10);
+    if(isNaN(n)) n = TOTAL;
+    G.total = Math.max(1, Math.min(MAX_TOTAL, n));
+    renderHome();          // repaint so the quick-pick buttons highlight correctly
+  }
 });
 
 /* ── RENDER TOPICS (chapters) ── */
@@ -533,6 +572,15 @@ function renderHome(){
         </button>`).join('')}
       </div>
     </div>
+    <div>
+      <div class="sh">Number of questions <span class="sh-hint">pick or type any number (1–${MAX_TOTAL})</span></div>
+      <div class="num-row">
+        ${[5,10,15,20].map(n=>`<button class="num-btn${G.total===n?' on':''}" data-a="num" data-v="${n}">${n}</button>`).join('')}
+        <input class="num-in" id="numin" type="number" min="1" max="${MAX_TOTAL}"
+               placeholder="Custom" value="${[5,10,15,20].includes(G.total)?'':G.total}"
+               data-a="numinput" />
+      </div>
+    </div>
     <div class="tip">
       <b>🔥 Streak bonus</b> — 3+ correct in a row earns 20 pts per answer instead of 10.
       &nbsp;&nbsp;<b>❤️ Lives</b> — you have 3. Lose them all and the quest ends.
@@ -556,7 +604,7 @@ function renderGameShell(){
     </div>
     <div>
       <div class="prg-bar"><div class="prg-fill" id="pf"></div></div>
-      <div class="prg-lbl" id="pl">${h(G.sub)}${topicLabel} · ${h(G.diff)} · Q0/${TOTAL}</div>
+      <div class="prg-lbl" id="pl">${h(G.sub)}${topicLabel} · ${h(G.diff)} · Q0/${G.total}</div>
     </div>
     <div class="card" id="card"></div>
     <button class="nx-btn" id="nx" data-a="next">NEXT QUESTION →</button>
@@ -593,8 +641,8 @@ function hud(){
   const hts=$('hts'); if(hts) hts.textContent=[0,1,2].map(i=>i<G.lives?'❤️':'🖤').join('');
   const pts=$('pts'); if(pts) pts.textContent=`${G.score} pts`;
   const stk=$('stk'); if(stk){ if(G.streak>=2){ stk.textContent=`🔥 ${G.streak}× streak`; stk.style.display='block'; } else { stk.style.display='none'; } }
-  const pf=$('pf');   if(pf)  pf.style.width=`${Math.min(G.qn/TOTAL*100,100)}%`;
-  const pl=$('pl');   if(pl){ const tl=G.topics.length>0?` · ${G.topics.length} ch.`:''; pl.textContent=`${G.sub}${tl} · ${G.diff} · Q${G.qn}/${TOTAL}`; }
+  const pf=$('pf');   if(pf)  pf.style.width=`${Math.min(G.qn/G.total*100,100)}%`;
+  const pl=$('pl');   if(pl){ const tl=G.topics.length>0?` · ${G.topics.length} ch.`:''; pl.textContent=`${G.sub}${tl} · ${G.diff} · Q${G.qn}/${G.total}`; }
 }
 
 /* ── BUILD THE POOL ── filter bank by subject+difficulty(+chapters),
@@ -619,11 +667,11 @@ function buildPool(){
     q.diff === G.diff &&
     (G.topics.length === 0 || G.topics.includes(q.topic))
   );
-  if (pool.length < TOTAL) {                       // broaden: drop chapter filter
+  if (pool.length < G.total) {                     // broaden: drop chapter filter
     const extra = bySub.filter(q => typeOk(q) && q.diff === G.diff && !pool.includes(q));
     pool = pool.concat(extra);
   }
-  if (pool.length < TOTAL) {                       // broaden: any difficulty (keep type)
+  if (pool.length < G.total) {                      // broaden: any difficulty (keep type)
     const extra = bySub.filter(q => typeOk(q) && !pool.includes(q));
     pool = pool.concat(extra);
   }
@@ -745,7 +793,7 @@ function scoreAnswer(isOk, revealText){
       expl.style.display='block';
     }
     const nx=$('nx');
-    if(nx){ nx.textContent = (G.qn>=TOTAL || G.lives<=0) ? 'SEE RESULTS →' : 'NEXT QUESTION →'; nx.style.display='block'; }
+    if(nx){ nx.textContent = (G.qn>=G.total || G.lives<=0) ? 'SEE RESULTS →' : 'NEXT QUESTION →'; nx.style.display='block'; }
   },360);
 }
 
@@ -795,7 +843,7 @@ function submitFill(){
 /* ── NEXT / START ── */
 function next(){
   if(G.lives<=0)  { renderEnd(false); return; }
-  if(G.qn>=TOTAL) { renderEnd(true);  return; }
+  if(G.qn>=G.total) { renderEnd(true);  return; }
   loadQ();
 }
 
@@ -810,5 +858,6 @@ function startGame(){
 renderHome();
 detectAI().then(()=>renderHome());   // re-render once we know if AI is on
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0cb86750f6fa722',t:'MTc4MTYzMDg0Ng=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
+
