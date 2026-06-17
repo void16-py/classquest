@@ -63,25 +63,45 @@ function buildPrompt({ sub, diff, qtype, topics, recent }) {
     ? `Do NOT repeat or closely resemble any of these recent questions: ${recent.slice(-6).map(r=>`"${r}"`).join(' | ')}.`
     : '';
 
+  // Difficulty guidance — pushes the model to make genuinely challenging,
+  // exam-grade questions instead of trivial recall.
+  const diffGuide = ({
+    'Beginner':
+`This is BEGINNER level, but it must still be a proper exam question — NOT trivial.
+Test clear understanding of a core concept or a simple one-step application.
+Avoid yes/no obvious facts; the options must all look believable.`,
+    'Intermediate':
+`This is INTERMEDIATE level. Make it genuinely challenging.
+Require applying a concept, a 2–3 step calculation, interpreting a situation,
+or connecting two ideas. The distractors (wrong options) must be common
+mistakes a student would actually make, so the answer isn't obvious.`,
+    'Advanced':
+`This is ADVANCED level. Make it HARD — like a tough board-exam / HOTS question.
+Require multi-step reasoning, deeper analysis, application to an unfamiliar
+scenario, or combining several concepts. Every wrong option must be very
+tempting and plausible. Do NOT make it answerable by simple memorisation.`
+  })[diff] || 'Make it a solid, non-trivial question.';
+
   // Which JSON shape do we want back?
   let shapeRules;
   if (qtype === 'mcq') {
     shapeRules =
 `Return a MULTIPLE-CHOICE question in EXACTLY this JSON shape:
 {"type":"mcq","topic":"<chapter>","question":"<text>","options":["A","B","C","D"],"correct":0,"explanation":"<one short sentence>"}
-- "options": exactly 4 plausible choices (plain text, no "A)" prefixes).
+- "options": exactly 4 plausible choices (plain text, no "A)" prefixes). All four must be believable; wrong ones should be realistic mistakes.
 - "correct": the index (0,1,2,3) of the correct option.`;
   } else if (qtype === 'tf') {
     shapeRules =
 `Return a TRUE/FALSE question in EXACTLY this JSON shape:
 {"type":"tf","topic":"<chapter>","question":"<statement>","answer":true,"explanation":"<one short sentence>"}
-- "answer": true or false (boolean).`;
+- "answer": true or false (boolean).
+- Make the statement subtle — include a common misconception so it isn't obvious.`;
   } else if (qtype === 'fill') {
     shapeRules =
 `Return a FILL-IN-THE-BLANK question in EXACTLY this JSON shape:
 {"type":"fill","topic":"<chapter>","question":"<text with ____ for the blank>","answer":"<correct answer>","accept":["<other accepted answers>"],"explanation":"<one short sentence>"}
-- Put a blank "____" in the question text.
-- "accept": optional array of other acceptable answers (can be empty []).`;
+- Put a blank "____" in the question text. The blank should test a precise term, value or result — not something trivially obvious.
+- "accept": optional array of other acceptable answers / spellings (can be empty []).`;
   } else {
     // mixed — let the model choose one type
     shapeRules =
@@ -91,15 +111,18 @@ TF  : {"type":"tf","topic":"<chapter>","question":"<statement>","answer":true,"e
 FILL: {"type":"fill","topic":"<chapter>","question":"<text with ____>","answer":"<answer>","accept":[],"explanation":"<one short sentence>"}`;
   }
 
-  return `You are a question generator for an Indian CBSE Class 9 study game.
+  return `You are an expert question-paper setter for the Indian CBSE Class 9 curriculum.
 Generate exactly ONE ${diff}-level question for the subject "${sub}".
 ${chapterLine}
 ${avoid}
 
+DIFFICULTY REQUIREMENT:
+${diffGuide}
+
 ${shapeRules}
 
 Return ONLY raw JSON — no markdown, no code fences, no commentary.
-Keep it factually correct and appropriate for Class 9. The "explanation" must be one short sentence.`;
+The question must be factually correct and strictly within the Class 9 syllabus, but should make the student think. The "explanation" must be one short sentence.`;
 }
 
 /* ----------------------------------------------------------------------------
