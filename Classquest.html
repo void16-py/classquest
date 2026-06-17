@@ -24,7 +24,7 @@ body{
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
   transition: background 0.5s ease; 
-  overflow-x: hidden; /* Udate hue letters se horizontal scrollbar na aaye */
+  overflow-x: hidden;
 }
 
 /* INTRO SPLASH SCREEN STYLES */
@@ -35,7 +35,7 @@ body{
   display: flex; align-items: center; justify-content: center;
   color: #c4b5fd; font-size: 2.8rem; font-weight: 950; letter-spacing: 3px;
   z-index: 9999; pointer-events: none;
-  animation: splashFadeOut 0.8s ease 3.8s forwards; 
+  animation: splashFadeOut 0.8s ease 3s forwards; 
 }
 
 @keyframes splashFadeOut {
@@ -46,7 +46,7 @@ body{
 #app{
   width:100%;max-width:640px;
   opacity: 0;
-  animation: appReveal 0.6s ease 4.2s forwards;
+  animation: appReveal 0.6s ease 3.2s forwards;
 }
 
 @keyframes appReveal {
@@ -58,8 +58,7 @@ body{
   display: inline-block;
   opacity: 0;
   filter: blur(12px);
-  /* Time badhakar 1.4s kar diya taaki letters dheere se aayein */
-  animation: letterReveal 1.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation: letterReveal 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
 /* Letters screen ke bohot bahar se ghumte hue udkar aayenge */
@@ -599,7 +598,8 @@ function triggerBackgroundParticles(subject) {
 const $ = id => document.getElementById(id);
 
 const app = html => { 
-  document.getElementById('app').innerHTML = html; 
+  const el = document.getElementById('app');
+  if(el) el.innerHTML = html; 
 };
 
 function h(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -619,15 +619,9 @@ function topicsFor(sub){
   return [];
 }
 
-/* HIGH-SPEED SELECTIVE TARGET TEXT CONVERSION FOR DIRECTIONAL ANGLEReveal */
-function animateTextLetterByLetter() {
-  const container = $('app');
-  const splash = $('intro-splash');
-  
-  // Decide dynamically which view container's data requires encryption parsing
-  let target = (splash && splash.style.visibility !== 'hidden' && splash.textContent.trim() !== "") ? splash : container;
+/* HIGH-SPEED DIRECTIONAL REVEAL CONVERSION ENGINE */
+function animateTextInContainer(target) {
   if (!target) return;
-
   let globalCharIndex = 0;
   const directions = ['from-top', 'from-bottom', 'from-left', 'from-right'];
 
@@ -646,8 +640,7 @@ function animateTextLetterByLetter() {
           const span = document.createElement('span');
           span.className = `anim-char ${randomDir}`;
           span.textContent = char;
-          // Delay spacing index scalar bumped to 0.08s for fluid dramatic reveal pacing
-          span.style.animationDelay = `${globalCharIndex * 0.08}s`;
+          span.style.animationDelay = `${globalCharIndex * 0.06}s`;
           globalCharIndex++;
           fragment.appendChild(span);
         }
@@ -668,17 +661,17 @@ document.addEventListener('click', e=>{
   if(!t) return;
   const a = t.getAttribute('data-a');
   const v = t.getAttribute('data-v');
-  if(a==='sub'){ G.sub=v; G.topics=[]; triggerBackgroundParticles(v); renderHome(); animateTextLetterByLetter(); }
-  else if(a==='diff'){ G.diff=v; renderHome(); animateTextLetterByLetter(); }
-  else if(a==='qtype'){ G.qtype=v; renderHome(); animateTextLetterByLetter(); }
-  else if(a==='num'){ G.total=parseInt(v,10); renderHome(); animateTextLetterByLetter(); }
+  if(a==='sub'){ G.sub=v; G.topics=[]; triggerBackgroundParticles(v); renderHome(); animateTextInContainer($('app')); }
+  else if(a==='diff'){ G.diff=v; renderHome(); animateTextInContainer($('app')); }
+  else if(a==='qtype'){ G.qtype=v; renderHome(); animateTextInContainer($('app')); }
+  else if(a==='num'){ G.total=parseInt(v,10); renderHome(); animateTextInContainer($('app')); }
   else if(a==='topic'){ toggleTopic(v); }
   else if(a==='clearTopics'){ G.topics=[]; renderTopics(); }
   else if(a==='start'){ startGame(); }
   else if(a==='ans'){ answer(parseInt(v,10)); }
   else if(a==='submitFill'){ submitFill(); }
   else if(a==='next'){ next(); }
-  else if(a==='home'){ renderHome(); animateTextLetterByLetter(); }
+  else if(a==='home'){ renderHome(); animateTextInContainer($('app')); }
 });
 
 function chapBtn(t){ return `<button class="topic-btn${G.topics.includes(t)?' on':''}" data-a="topic" data-v="${h(t)}">${h(t)}</button>`; }
@@ -699,7 +692,7 @@ function renderTopics(){
 function toggleTopic(t){
   const i = G.topics.indexOf(t); if (i===-1) G.topics.push(t); else G.topics.splice(i,1);
   renderTopics();
-  animateTextLetterByLetter();
+  animateTextInContainer($('app'));
 }
 
 function renderHome(){
@@ -731,7 +724,7 @@ function renderHome(){
       <div class="grp">
         <div class="sh">Quest Length</div>
         <div class="num-row">
-          ${[5, 10, 20].map(n => `<button class="num-btn${G.total === n ? ' on' : ''}" data-a="num" data-v="${n}">${n}</button>`).join('')}
+          ${[5, 10, 20].map(n => `<button class="num-btn${G.total === n ? ' on' : ''}" data-a="num" data-v="${n}">${n}</button>join('')}
         </div>
       </div>
       <button class="go-btn" data-a="start">START QUEST</button>
@@ -801,7 +794,7 @@ function renderQuestion() {
       <div class="expl" id="expl-box"></div>
     </div>
   `;
-  animateTextLetterByLetter();
+  animateTextInContainer($('game-card'));
 }
 
 function answer(idx) {
@@ -838,30 +831,28 @@ function processOutcome(isCorrect) {
   $('hud-streak').textContent = `${G.streak} Streak 🔥`;
   
   expBox.style.display = 'block'; $('next-btn').style.display = 'block';
-  animateTextLetterByLetter();
+  animateTextInContainer(expBox);
 }
 
 function endGame() {
   app(`<div class="end"><div class="end-ic">🏆</div><h2 class="end-ti">Quest Completed</h2><div class="end-sc">${G.score}</div><button class="pa-btn" data-a="home">PLAY AGAIN</button></div>`);
-  animateTextLetterByLetter();
+  animateTextInContainer($('app'));
 }
 
 /* INITIALIZER SPLASH ROUTINE CONTROL */
-(function init() { 
-  // 1. Splash container load karao aur text setup karo
+window.addEventListener('DOMContentLoaded', () => {
   const splash = $('intro-splash');
-  if (splash) splash.textContent = "Created by Pawan";
+  if (splash) {
+    splash.textContent = "Created by Pawan";
+    animateTextInContainer(splash);
+  }
 
-  // 2. Pawan text ke letters ko sabse pehle door se udakar center lao
-  animateTextLetterByLetter();
-
-  // 3. Jab splash text poora load hokar hatne lage, tab game render karo aur uske letters udao!
   setTimeout(() => {
-    renderHome(); // 4.2 Seconds ke delay sequence par actual UI load hoga background mein
+    renderHome(); 
     triggerBackgroundParticles(G.sub);
-    animateTextLetterByLetter(); // Ab poore game ke letters mast chaaro taraf se udte hue aayenge!
-  }, 4200);
-})();
+    animateTextInContainer($('app')); 
+  }, 3300);
+});
 </script>
 </body>
 </html>
