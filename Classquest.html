@@ -33,9 +33,17 @@ body{
   top: 0; left: 0; width: 100vw; height: 100vh;
   background: #090514;
   display: flex; align-items: center; justify-content: center;
-  color: #c4b5fd; font-size: 2.8rem; font-weight: 950; letter-spacing: 3px;
   z-index: 9999; pointer-events: none;
-  animation: splashFadeOut 0.8s ease 3s forwards; 
+  animation: splashFadeOut 0.8s ease 3.5s forwards; 
+}
+
+.splash-text-wrap {
+  font-size: 3rem;
+  font-weight: 950;
+  letter-spacing: 4px;
+  text-align: center;
+  color: #c4b5fd;
+  text-shadow: 0 0 30px rgba(167,139,250,0.6);
 }
 
 @keyframes splashFadeOut {
@@ -46,7 +54,7 @@ body{
 #app{
   width:100%;max-width:640px;
   opacity: 0;
-  animation: appReveal 0.6s ease 3.2s forwards;
+  animation: appReveal 0.6s ease 3.7s forwards;
 }
 
 @keyframes appReveal {
@@ -57,15 +65,16 @@ body{
 .anim-char {
   display: inline-block;
   opacity: 0;
-  filter: blur(12px);
-  animation: letterReveal 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  filter: blur(20px);
+  animation: letterReveal 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  will-change: transform, opacity, filter;
 }
 
-/* Letters screen ke bohot bahar se ghumte hue udkar aayenge */
-.from-top    { transform: translateY(-400px) scale(0) rotate(-180deg); }
-.from-bottom { transform: translateY(400px) scale(0) rotate(180deg); }
-.from-left   { transform: translateX(-400px) scale(0) rotate(-120deg); }
-.from-right  { transform: translateX(400px) scale(0) rotate(120deg); }
+/* Letters chaaro taraf se tezi se udte huye center aayenge */
+.from-top    { transform: translateY(-300px) scale(0) rotate(-180deg); }
+.from-bottom { transform: translateY(300px) scale(0) rotate(180deg); }
+.from-left   { transform: translateX(-300px) scale(0) rotate(-90deg); }
+.from-right  { transform: translateX(300px) scale(0) rotate(90deg); }
 
 @keyframes letterReveal {
   to {
@@ -79,7 +88,7 @@ body{
 @keyframes topicFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .topics-wrap{animation:topicFade .3s cubic-bezier(0.4, 0, 0.2, 1)}
 
-/* HOME SCREEN ULTRA BEAUTIFICATION */
+/* HOME SCREEN BEAUTIFICATION */
 .home{display:flex;flex-direction:column;gap:28px;padding-top:14px}
 .brand{text-align:center;padding:12px 0 16px}
 .brand-name{
@@ -196,31 +205,14 @@ body{
 .clear-btn:hover{color:#f472b6}
 
 .df-row{display:flex;gap:10px}
-.qt-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-@media(max-width:480px){.qt-row{grid-template-columns:repeat(2,1fr)}}
 
 .num-row{display:flex;gap:10px;flex-wrap:wrap}
 .num-btn{flex:1;min-width:58px;padding:14px 8px;font-size:.95rem;font-weight:800}
-.num-in{
-  flex:1;min-width:90px;padding:12px 16px;
-  background:rgba(255,255,255,.01);
-  border:1px solid rgba(255,255,255,.08);
-  outline:none;font-weight:700;font-size:.9rem;
-}
-.num-in:focus{border-color:#a78bfa;background:rgba(167,139,250,.05);box-shadow:0 0 12px rgba(167,139,250,0.15)}
-.num-in::placeholder{color:#4e3d6f;font-weight:600}
 
 .df-btn{flex:1;padding:16px 12px;text-align:center;}
 .df-ic{font-size:1.25rem;display:block;margin-bottom:4px}
 .df-nm{font-size:.82rem;font-weight:700;display:block;color:#e2d9f3}
 .df-ds{font-size:.65rem;color:#635287;margin-top:3px;font-weight:500}
-
-.tip{
-  background:linear-gradient(135deg, rgba(167,139,250,.05), rgba(244,114,182,0.02));
-  border:1px solid rgba(167,139,250,.15);
-  border-radius:14px;padding:14px 18px;font-size:.78rem;color:#9b8cb8;line-height:1.6;
-}
-.tip b{color:#c4b5fd;font-weight:700}
 
 .go-btn{
   width:100%;padding:18px;
@@ -244,18 +236,16 @@ body{
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
 }
-.hts{display:flex;gap:5px;font-size:1.05rem;filter:drop-shadow(0 2px 4px rgba(239,68,68,0.2))}
-.pts{font-size:1.25rem;font-weight:800;color:#c4b5fd;text-shadow:0 0 10px rgba(167,139,250,0.3)}
+.hts{display:flex;gap:5px;font-size:1.05rem;}
+.pts{font-size:1.25rem;font-weight:800;color:#c4b5fd;}
 .stk{
   font-size:.75rem;font-weight:800;color:#f59e0b;
   background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);
   padding:4px 12px;border-radius:99px;display:none;
-  box-shadow:0 2px 8px rgba(245,158,11,0.15);
 }
 
 .prg-bar{background:rgba(255,255,255,.04);border-radius:99px;height:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.02)}
 .prg-fill{height:100%;background:linear-gradient(90deg,#a78bfa,#f472b6);border-radius:99px;transition:width .45s cubic-bezier(.4,0,.2,1);width:0%}
-.prg-lbl{font-size:.65rem;color:#5a4c7a;font-weight:700;margin-top:6px;text-align:right;letter-spacing:1px}
 
 /* THE CONTAINER CARD */
 .card{
@@ -264,14 +254,6 @@ body{
   border-radius:24px;padding:26px;min-height:200px;
   box-shadow:0 12px 40px rgba(0,0,0,0.3);
 }
-@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.q-inner{animation:cardIn .3s cubic-bezier(0.4, 0, 0.2, 1)}
-
-/* LOADING LOOPER */
-@keyframes spin{to{transform:rotate(360deg)}}
-.ld{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 0;gap:16px}
-.sp{width:36px;height:36px;border:3.5px solid rgba(167,139,250,.12);border-top-color:#a78bfa;border-radius:50%;animation:spin .6s linear infinite}
-.ld-t{font-size:.7rem;color:#756599;font-weight:700;letter-spacing:2px;text-transform:uppercase}
 
 .q-topic{font-size:.62rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;margin-bottom:12px;opacity:.9}
 .qt{font-size:1.1rem;font-weight:600;line-height:1.7;color:#f1ecfb;margin-bottom:20px}
@@ -293,9 +275,8 @@ body{
 }
 .opt[disabled]{cursor:default}
 
-/* FEEDBACK COLORS STATE */
-.opt.ok{background:rgba(34,197,94,.08);border-color:#22c55e;color:#a7f3d0;box-shadow:0 0 14px rgba(34,197,94,0.15)}
-.opt.ng{background:rgba(239,68,68,.08);border-color:#ef4444;color:#fca5a5;box-shadow:0 0 14px rgba(239,68,68,0.15)}
+.opt.ok{background:rgba(34,197,94,.08);border-color:#22c55e;color:#a7f3d0;}
+.opt.ng{background:rgba(239,68,68,.08);border-color:#ef4444;color:#fca5a5;}
 .opt.dm{opacity:.22;transform:scale(0.98)}
 
 .opt-l{
@@ -303,11 +284,7 @@ body{
   display:flex;align-items:center;justify-content:center;
   font-size:.72rem;font-weight:800;flex-shrink:0;
   background:rgba(255,255,255,.04);color:#7f6eab;
-  transition:all .15s;
 }
-.opt:hover .opt-l{background:rgba(167,139,250,0.15);color:#c4b5fd}
-.opt.ok .opt-l{background:rgba(34,197,94,.15);color:#22c55e}
-.opt.ng .opt-l{background:rgba(239,68,68,.15);color:#ef4444}
 
 /* INPUT BLANKS TYPE CSS */
 .fill-row{display:flex;gap:10px}
@@ -324,19 +301,15 @@ body{
   padding:0 24px;background:linear-gradient(135deg,#a78bfa,#f472b6);
   border:none;border-radius:14px;color:#0e0618;font-family:inherit;
   font-size:.82rem;font-weight:800;letter-spacing:1px;cursor:pointer;
-  transition:opacity .15s, transform .15s;
 }
-.fill-go:hover:not([disabled]){transform:scale(1.02)}
 .fill-go[disabled]{opacity:.3;cursor:default}
 
-.ans-reveal{margin-top:12px;font-size:.85rem;color:#34d399;font-weight:700;letter-spacing:0.5px}
+.ans-reveal{margin-top:12px;font-size:.85rem;color:#34d399;font-weight:700;}
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .expl{
   margin-top:16px;padding:14px 18px;
   background:rgba(167,139,250,.04);border:1px solid rgba(167,139,250,.1);
   border-radius:12px;font-size:.82rem;color:#a394c2;line-height:1.65;display:none;
-  animation:fadeUp .25s ease;
 }
 .expl-ok{color:#34d399;font-weight:800}
 .expl-ng{color:#f87171;font-weight:800}
@@ -346,40 +319,25 @@ body{
   border:none;border-radius:14px;color:#0e0618;
   font-family:inherit;font-size:.9rem;font-weight:800;letter-spacing:1.5px;
   cursor:pointer;box-shadow:0 4px 18px rgba(167,139,250,.25);
-  transition:all .15s;display:none;
+  display:none;
 }
-.nx-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(167,139,250,.4)}
 
 /* END SCORE CARD VIEW */
 .end{display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px;padding:30px 0}
-.end-ic{font-size:4.2rem;filter:drop-shadow(0 4px 12px rgba(245,158,11,0.2))}
+.end-ic{font-size:4.2rem;}
 .end-ti{
-  font-size:2.2rem;font-weight:900;letter-spacing:-0.5px;
+  font-size:2.2rem;font-weight:900;
   background:linear-gradient(135deg,#a78bfa,#f472b6);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.end-sc{font-size:3.6rem;font-weight:900;color:#fbbf24;line-height:1;text-shadow:0 0 20px rgba(251,191,36,0.25)}
-.end-sl{font-size:.65rem;color:#5a4a7b;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-top:6px}
-.end-grade{font-size:.92rem;font-weight:700;color:#c4b5fd}
-
-.st-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:8px 0}
-.st{
-  background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.05);
-  border-radius:16px;padding:16px 20px;min-width:105px;backdrop-filter:blur(4px);
-}
-.st-v{font-size:1.4rem;font-weight:800;color:#ffffff}
-.st-l{font-size:.6rem;color:#5a4a7b;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.end-sc{font-size:3.6rem;font-weight:900;color:#fbbf24;}
 
 .pa-btn{
   padding:16px 48px;background:linear-gradient(135deg,#a78bfa,#f472b6);
   border:none;border-radius:14px;color:#0e0618;
   font-family:inherit;font-size:.9rem;font-weight:800;letter-spacing:1.5px;
-  cursor:pointer;box-shadow:0 4px 18px rgba(167,139,250,.3);
-  transition:all .15s;
+  cursor:pointer;
 }
-.pa-btn:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(167,139,250,.45)}
-
-.footer{text-align:center;font-size:.62rem;color:#3f325c;margin-top:14px;letter-spacing:1px;font-weight:600}
 
 /* FLOATING BG PARTICLES */
 .bg-particle {
@@ -394,7 +352,6 @@ body{
   top: 100vh;
   will-change: transform, opacity;
   animation: floatUp var(--duration, 5s) cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-  text-shadow: 0 0 10px var(--particle-glow, rgba(167, 139, 250, 0.1));
 }
 
 @keyframes floatUp {
@@ -416,67 +373,14 @@ window.CHAPTERS = {
     'Orienting Yourself: The Use of Coordinates',
     'Introduction to Linear Polynomials',
     'The World of Numbers',
-    'Exploring Algebraic Identities',
-    "I'm Up and Down, and Round and Round",
-    'Measuring Space: Perimeter and Area',
-    'The Mathematics of Maybe: Introduction to Probability',
-    'Predicting What Comes Next: Exploring Sequences and Progressions'
+    'Exploring Algebraic Identities'
   ],
   'Science': {
-    'Physics': [
-      'Describing Motion Around Us',
-      'How Forces Affect Motion',
-      'Work, Energy, and Simple Machines',
-      'Sound Waves: Characteristics and Applications'
-    ],
-    'Chemistry': [
-      'Exploring Mixtures and their Separation',
-      'Journey Inside the Atom',
-      'Atomic Foundations of Matter'
-    ],
-    'Biology': [
-      'Cell: The Building Block of Life',
-      'Tissues in Action',
-      'Reproduction: How Life Continues',
-      'Patterns in Life: Diversity and Classification',
-      'Earth as a System: Energy, Matter, and Life'
-    ],
-    'General': [
-      'Exploration: Entering the World of Secondary Science'
-    ]
+    'Physics': ['Describing Motion Around Us', 'How Forces Affect Motion'],
+    'Chemistry': ['Journey Inside the Atom', 'Atomic Foundations of Matter']
   },
-  'English': [
-    'How I Taught My Grandmother to Read',
-    'The Pot Maker',
-    'Winds of Change',
-    'Vitamin-M',
-    'The World of Limitless Possibilities',
-    'Twin Melodies',
-    'Carrier of Words',
-    'Follow That Dream',
-    'Bharat Our Land',
-    'Gifts of Grace - Honouring Our Vocations',
-    'Canvas of Soil',
-    'I Cannot Remember My Mother',
-    'Nine Gold Medals',
-    'A Friend Found in Music',
-    'Believe in Yourself',
-    'Words'
-  ],
-  'Hindi': [
-    'दो बैलों की कथा',
-    'क्या लिखूं?',
-    'संवादहीन',
-    'ऐसी भी बातें होती हैं (लता मंगेशकर से साक्षात्कार)',
-    'आखिरी चट्टान तक',
-    'रीढ़ की हड्डी',
-    'में और मेरा देश',
-    'रैदास के पद',
-    'राम-परशुराम-लक्ष्मण संवाद',
-    'भारती, जय, विजयोत्सव!',
-    'झाँसी की रानी',
-    'घर की याद'
-  ]
+  'English': ['How I Taught My Grandmother to Read', 'The Pot Maker', 'Winds of Change'],
+  'Hindi': ['दो बैलों की कथा', 'क्या लिखूं?', 'संवादहीन']
 };
 
 window.QUESTION_BANK = [
@@ -484,25 +388,13 @@ window.QUESTION_BANK = [
     sub: 'Maths', diff: 'Beginner', topic: 'The World of Numbers', type: 'mcq',
     question: 'Which of the following is an irrational number?',
     options: ['√4', '3.14', '√7', '22/7'], correct: 2,
-    explanation: '√7 is irrational because 7 is not a perfect square, making its decimal expansion non-terminating and non-recurring.'
+    explanation: '√7 is irrational because 7 is not a perfect square.'
   },
   {
     sub: 'Maths', diff: 'Intermediate', topic: 'The World of Numbers', type: 'fill',
     question: 'The rationalized form of the denominator for 1 / (√5 - 2) is ____.',
-    answer: '√5+2', accept: ['√5 + 2', '2+√5'],
-    explanation: 'Multiply numerator and denominator by the conjugate (√5 + 2). The denominator becomes (√5)² - 2² = 5 - 4 = 1.'
-  },
-  {
-    sub: 'Maths', diff: 'Advanced', topic: 'Exploring Algebraic Identities', type: 'mcq',
-    question: 'If x + y + z = 0, then the value of x³ + y³ + z³ is equal to:',
-    options: ['0', 'xyz', '2xyz', '3xyz'], correct: 3,
-    explanation: 'According to the algebraic identity, if x + y + z = 0, then x³ + y³ + z³ = 3xyz.'
-  },
-  {
-    sub: 'Maths', diff: 'Beginner', topic: 'Orienting Yourself: The Use of Coordinates', type: 'tf',
-    question: 'The point (-3, -5) lies in the third quadrant (Quadrant III).',
-    answer: true,
-    explanation: 'In the third quadrant, both the x-coordinate (abscissa) and the y-coordinate (ordinate) are negative.'
+    answer: '√5+2',
+    explanation: 'Multiply numerator and denominator by conjugate (√5 + 2).'
   },
   {
     sub: 'Science', diff: 'Beginner', topic: 'Describing Motion Around Us', type: 'mcq',
@@ -511,22 +403,10 @@ window.QUESTION_BANK = [
     explanation: 'The slope of a distance-time graph represents speed.'
   },
   {
-    sub: 'Science', diff: 'Intermediate', topic: 'How Forces Affect Motion', type: 'fill',
-    question: 'The mathematical expression of Newton\'s Second Law of Motion is F = ____.',
-    answer: 'ma', accept: ['m*a', 'mass * acceleration'],
-    explanation: 'Force is directly proportional to the product of mass (m) and acceleration (a).'
-  },
-  {
     sub: 'English', diff: 'Beginner', topic: 'How I Taught My Grandmother to Read', type: 'mcq',
     question: 'Who is the author of the story "How I Taught My Grandmother to Read"?',
     options: ['Ruskin Bond', 'Sudha Murty', 'R.K. Narayan', 'Vikram Seth'], correct: 1,
-    explanation: 'Sudha Murty is the author, sharing a touching personal account of teaching her grandmother.'
-  },
-  {
-    sub: 'Hindi', diff: 'Beginner', topic: 'दो बैलों की कथा', type: 'mcq',
-    question: 'प्रेमचंद द्वारा रचित कहानी "दो बैलों की कथा" में बैलों के नाम क्या हैं?',
-    options: ['सोना और चांदी', 'हीरा और मोती', 'जय और वीरू', 'राम और श्याम'], correct: 1,
-    explanation: 'कहानी के मुख्य पात्र दो बैल हैं जिनका नाम हीरा और मोती hai।'
+    explanation: 'Sudha Murty is the author.'
   }
 ];
 </script>
@@ -535,35 +415,26 @@ window.QUESTION_BANK = [
 const SUBJECTS = [
   {name:'Maths',      em:'📐'},
   {name:'Science',    em:'🔬'},
-  {name:'History',    em:'🏛️'},
-  {name:'Geography', em:'🌍'},
-  {name:'Civics',     em:'⚖️'},
-  {name:'Economics', em:'💰'},
   {name:'English',    em:'📖'},
   {name:'Hindi',      em:'🪔'}
 ];
 
 const DIFFS = [
-  {name:'Beginner',   ic:'🌱',ds:'Recall & basics'},
-  {name:'Intermediate', ic:'⚙️',ds:'Apply & connect'},
-  {name:'Advanced',     ic:'🔥',ds:'Think deeper'}
+  {name:'Beginner',   ic:'🌱',ds:'Basics'},
+  {name:'Intermediate', ic:'⚙️',ds:'Apply'},
+  {name:'Advanced',     ic:'🔥',ds:'Deals'}
 ];
 
 const TYPES = [
   {name:'Mixed',      val:'mixed', ic:'🎲', ds:'All types'},
-  {name:'MCQ',        val:'mcq',   ic:'🔘', ds:'Multiple choice'},
-  {name:'Fill Blank', val:'fill',  ic:'✍️', ds:'Type the answer'},
-  {name:'True/False', val:'tf',    ic:'✅', ds:'True or false'}
+  {name:'MCQ',        val:'mcq',   ic:'🔘', ds:'Choices'}
 ];
 
-const TOTAL = 10;
+const TOTAL = 5;
 
 let G = {
   sub:'Maths', diff:'Beginner', qtype:'mixed', topics:[], total:TOTAL,
-  q:null, sel:null, fb:null,
-  score:0, lives:3, streak:0, best:0,
-  qn:0, hits:0, used:[], pool:[],
-  recent:[], aiAvailable:false, loading:false
+  q:null, sel:null, score:0, lives:3, streak:0, qn:0, pool:[]
 };
 
 function triggerBackgroundParticles(subject) {
@@ -573,35 +444,28 @@ function triggerBackgroundParticles(subject) {
   let symbols = ['0', '1', 'x', '+', '√'];
   let glowColor = 'rgba(167, 139, 250, 0.08)';
 
-  if (subject === 'Maths') { symbols = ['0', '1', 'x', 'y', '+', '−', '=', '√', 'π']; glowColor = 'rgba(167, 139, 250, 0.25)'; }
-  else if (subject === 'Science') { symbols = ['⚛', '🔬', 'H₂O', '🧪', '🧬', '⚡']; glowColor = 'rgba(52, 211, 153, 0.2)'; }
-  else if (subject === 'English') { symbols = ['A', 'B', '✍️', '📖', '"', '?', '!']; glowColor = 'rgba(244, 114, 182, 0.2)'; }
-  else if (subject === 'Hindi') { symbols = ['क', 'ख', 'अ', 'आ', '🪔', '📜']; glowColor = 'rgba(251, 146, 60, 0.2)'; }
+  if (subject === 'Maths') { symbols = ['0', '1', 'x', 'y', '+', '√']; glowColor = 'rgba(167, 139, 250, 0.25)'; }
+  else if (subject === 'Science') { symbols = ['⚛', '🔬', 'H₂O', '🧪']; glowColor = 'rgba(52, 211, 153, 0.2)'; }
 
   document.body.style.setProperty('--subject-glow', glowColor);
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 15; i++) {
     setTimeout(() => {
       const p = document.createElement('div');
       p.className = 'bg-particle';
       p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
       p.style.setProperty('--x', Math.random() * 100 + 'vw');
-      p.style.setProperty('--size', Math.random() * (30 - 16) + 16 + 'px');
-      p.style.setProperty('--duration', Math.random() * (7 - 4) + 4 + 's');
+      p.style.setProperty('--size', Math.random() * (26 - 16) + 16 + 'px');
+      p.style.setProperty('--duration', Math.random() * (6 - 4) + 4 + 's');
       p.style.setProperty('--particle-glow', glowColor);
       document.body.appendChild(p);
       p.addEventListener('animationend', () => p.remove());
-    }, i * 120);
+    }, i * 100);
   }
 }
 
 const $ = id => document.getElementById(id);
-
-const app = html => { 
-  const el = document.getElementById('app');
-  if(el) el.innerHTML = html; 
-};
-
+const app = html => { const el = $('app'); if(el) el.innerHTML = html; };
 function h(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
@@ -612,14 +476,11 @@ function groupsFor(sub){
 }
 function topicsFor(sub){
   const c = window.CHAPTERS && window.CHAPTERS[sub];
-  if (c) {
-    if (Array.isArray(c)) return c;
-    return Object.keys(c).reduce((acc,g)=>acc.concat(c[g]), []);
-  }
+  if (c) { if (Array.isArray(c)) return c; return Object.keys(c).reduce((acc,g)=>acc.concat(c[g]), []); }
   return [];
 }
 
-/* HIGH-SPEED DIRECTIONAL REVEAL CONVERSION ENGINE */
+/* HIGH-SPEED DIRECTIONAL REVEAL CONVERSION ENGINE FOR EVERY NEW TEXT */
 function animateTextInContainer(target) {
   if (!target) return;
   let globalCharIndex = 0;
@@ -640,14 +501,14 @@ function animateTextInContainer(target) {
           const span = document.createElement('span');
           span.className = `anim-char ${randomDir}`;
           span.textContent = char;
-          span.style.animationDelay = `${globalCharIndex * 0.05}s`;
+          span.style.animationDelay = `${globalCharIndex * 0.015}s`; /* Smooth staggered line reveal */
           globalCharIndex++;
           fragment.appendChild(span);
         }
       }
       node.parentNode.replaceChild(fragment, node);
     } else if (node.nodeType === Node.ELEMENT_NODE) {
-      if (node.classList.contains('lg-em') || node.classList.contains('df-ic') || node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.tagName === 'INPUT') {
+      if (node.classList.contains('lg-em') || node.classList.contains('df-ic') || node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.tagName === 'INPUT' || node.tagName === 'BUTTON') {
         return;
       }
       Array.from(node.childNodes).forEach(recurse);
@@ -659,45 +520,40 @@ function animateTextInContainer(target) {
 document.addEventListener('click', e=>{
   const t = e.target.closest('[data-a]');
   if(!t) return;
-  const a = t.getAttribute('data-a');
-  const v = t.getAttribute('data-v');
-  if(a==='sub'){ G.sub=v; G.topics=[]; triggerBackgroundParticles(v); renderHome(); animateTextInContainer($('app')); }
-  else if(a==='diff'){ G.diff=v; renderHome(); animateTextInContainer($('app')); }
-  else if(a==='qtype'){ G.qtype=v; renderHome(); animateTextInContainer($('app')); }
-  else if(a==='num'){ G.total=parseInt(v,10); renderHome(); animateTextInContainer($('app')); }
-  else if(a==='topic'){ toggleTopic(v); }
-  else if(a==='clearTopics'){ G.topics=[]; renderTopics(); }
-  else if(a==='start'){ startGame(); }
-  else if(a==='ans'){ answer(parseInt(v,10)); }
-  else if(a==='submitFill'){ submitFill(); }
-  else if(a==='next'){ next(); }
-  else if(a==='home'){ renderHome(); animateTextInContainer($('app')); }
+  const a = t.getAttribute('data-a'); const v = t.getAttribute('data-v');
+  if(a=='sub'){ G.sub=v; G.topics=[]; triggerBackgroundParticles(v); renderHome(); }
+  else if(a=='diff'){ G.diff=v; renderHome(); }
+  else if(a=='qtype'){ G.qtype=v; renderHome(); }
+  else if(a=='num'){ G.total=parseInt(v,10); renderHome(); }
+  else if(a=='topic'){ toggleTopic(v); }
+  else if(a=='clearTopics'){ G.topics=[]; renderTopics(); animateTextInContainer($('topics-wrap')); }
+  else if(a=='start'){ startGame(); }
+  else if(a=='ans'){ answer(parseInt(v,10)); }
+  else if(a=='submitFill'){ submitFill(); }
+  else if(a=='next'){ next(); }
+  else if(a=='home'){ renderHome(); }
 });
 
 function chapBtn(t){ return `<button class="topic-btn${G.topics.includes(t)?' on':''}" data-a="topic" data-v="${h(t)}">${h(t)}</button>`; }
 function renderTopics(){
-  const wrap = $('topics-wrap');
-  if(!wrap) return;
-  const list = topicsFor(G.sub);
-  const groups = groupsFor(G.sub);
-  const n = G.topics.length;
+  const wrap = $('topics-wrap'); if(!wrap) return;
+  const list = topicsFor(G.sub); const groups = groupsFor(G.sub); const n = G.topics.length;
   if(list.length===0){ wrap.innerHTML=''; return; }
 
-  const header = `<div class="sh">Chapters ${n>0 ? `<span class="sh-badge">${n} selected</span><button class="clear-btn" data-a="clearTopics">clear</button>` : `<span class="sh-hint">pick some or leave blank</span>`}</div>`;
+  const header = `<div class="sh">Chapters ${n>0 ? `<span class="sh-badge">${n} selected</span><button class="clear-btn" data-a="clearTopics">clear</button>` : `<span class="sh-hint">pick or leave blank</span>`}</div>`;
   let body = groups ? Object.keys(groups).map(g=>`<div class="grp"><div class="grp-h">${h(g)}</div><div class="topic-grid">${groups[g].map(chapBtn).join('')}</div></div>`).join('') : `<div class="topic-grid">${list.map(chapBtn).join('')}</div>`;
-  
   wrap.innerHTML = `<div class="topics-wrap">${header}${body}</div>`;
 }
 
 function toggleTopic(t){
   const i = G.topics.indexOf(t); if (i===-1) G.topics.push(t); else G.topics.splice(i,1);
   renderTopics();
-  animateTextInContainer($('app'));
+  animateTextInContainer($('topics-wrap'));
 }
 
 function renderHome(){
   app(`
-    <div class="home">
+    <div class="home" id="home-view">
       <div class="brand">
         <h1 class="brand-name">ClassQuest</h1>
         <div class="brand-sub">Class 9 CBSE Core</div>
@@ -712,29 +568,24 @@ function renderHome(){
       <div class="grp">
         <div class="sh">Difficulty Level</div>
         <div class="df-row">
-          ${DIFFS.map(d => `<button class="df-btn${G.diff === d.name ? ' on' : ''}" data-a="diff" data-v="${h(d.name)}"><span class="df-ic">${d.ic}</span><span class="df-nm">${h(d.name)}</span><span class="df-ds">${h(d.ds)}</span></button>`).join('')}
-        </div>
-      </div>
-      <div class="grp">
-        <div class="sh">Question Type</div>
-        <div class="df-row">
-          ${TYPES.map(t => `<button class="df-btn${G.qtype === t.val ? ' on' : ''}" data-a="qtype" data-v="${h(t.val)}"><span class="df-ic">${t.ic}</span><span class="df-nm">${h(t.name)}</span><span class="df-ds">${h(t.ds)}</span></button>`).join('')}
+          ${DIFFS.map(d => `<button class="df-btn${G.diff === d.name ? ' on' : ''}" data-a="diff" data-v="${h(d.name)}"><span class="df-ic">${d.ic}</span><span class="df-nm">${h(d.name)}</span></button>`).join('')}
         </div>
       </div>
       <div class="grp">
         <div class="sh">Quest Length</div>
         <div class="num-row">
-          ${[5, 10, 20].map(n => `<button class="num-btn${G.total === n ? ' on' : ''}" data-a="num" data-v="${n}">${n}</button>`).join('')}
+          ${[5, 10].map(n => `<button class="num-btn${G.total === n ? ' on' : ''}" data-a="num" data-v="${n}">${n}</button>`).join('')}
         </div>
       </div>
       <button class="go-btn" data-a="start">START QUEST</button>
     </div>
   `);
   renderTopics();
+  animateTextInContainer($('home-view'));
 }
 
 function startGame() {
-  G.score = 0; G.lives = 3; G.streak = 0; G.qn = 0; G.hits = 0;
+  G.score = 0; G.lives = 3; G.streak = 0; G.qn = 0;
   let pool = (window.QUESTION_BANK || []).filter(q => q.sub === G.sub);
   if (G.diff) pool = pool.filter(q => q.diff === G.diff);
   if (G.topics.length > 0) pool = pool.filter(q => G.topics.includes(q.topic));
@@ -745,11 +596,11 @@ function startGame() {
 
 function renderGameLayout() {
   app(`
-    <div class="game">
+    <div class="game" id="game-view">
       <div class="tbar">
         <div class="pts" id="hud-score">0 pts</div>
         <div class="stk" id="hud-streak">0 Streak🔥</div>
-        <div class="hts" id="hud-lives">❤️❤️❤️</div>
+        <div class="hts" id="hud-lives">❤️❤️•</div>
       </div>
       <div class="prg-bar"><div class="prg-fill" id="hud-progress"></div></div>
       <div class="card" id="game-card"></div>
@@ -766,9 +617,10 @@ function next() {
   let q = G.pool.pop();
   if (!q) {
     q = {
-      sub: G.sub, diff: G.diff, topic: G.topics[0] || 'General', type: 'tf',
-      question: `Is review of elements within "${G.sub}" essential for comprehensive grade execution?`,
-      answer: true, explanation: 'Systematic overview enforces retrieval metrics.'
+      sub: G.sub, diff: G.diff, topic: G.topics[0] || 'General Overview', type: 'mcq',
+      question: `Is deep structural revision of ${G.sub} necessary for exam preparation?`,
+      options: ['Yes, absolutely', 'No, not needed', 'Maybe partially', 'Depends on syllabus'], correct: 0,
+      explanation: 'Active textbook recall reinforces cognitive patterns.'
     };
   }
   G.q = q;
@@ -776,35 +628,35 @@ function next() {
 }
 
 function renderQuestion() {
-  const q = G.q;
-  let formHtml = '';
+  const q = G.q; let formHtml = '';
   if (q.type === 'mcq') {
     formHtml = `<div class="opts">` + q.options.map((o, idx) => `<button class="opt" data-a="ans" data-v="${idx}"><span class="opt-l">${String.fromCharCode(65 + idx)}</span><span>${h(o)}</span></button>`).join('') + `</div>`;
-  } else if (q.type === 'tf') {
-    formHtml = `<div class="opts"><button class="opt" data-a="ans" data-v="1"><span class="opt-l">A</span><span>True</span></button><button class="opt" data-a="ans" data-v="0"><span class="opt-l">B</span><span>False</span></button></div>`;
   } else if (q.type === 'fill') {
     formHtml = `<div class="fill-row"><input type="text" id="fillan" class="fill-in" placeholder="Answer..."><button class="fill-go" data-a="submitFill">SUBMIT</button></div><div id="fill-reveal" class="ans-reveal"></div>`;
   }
 
   $('game-card').innerHTML = `
     <div class="q-inner">
-      <div class="q-topic">${h(q.topic)} • ${h(q.diff)}</div>
-      <div class="qt">${h(q.question)}</div>
+      <div class="q-topic" id="q-meta">${h(q.topic)} • ${h(q.diff)}</div>
+      <div class="qt" id="q-body">${h(q.question)}</div>
       ${formHtml}
       <div class="expl" id="expl-box"></div>
     </div>
   `;
-  animateTextInContainer($('game-card'));
+  
+  /* Pure magical application: Letter dynamically flies right when question elements populate */
+  animateTextInContainer($('q-meta'));
+  animateTextInContainer($('q-body'));
+  document.querySelectorAll('.opt span:last-child').forEach(optText => animateTextInContainer(optText));
 }
 
 function answer(idx) {
   if (G.sel !== null) return; G.sel = idx;
-  const q = G.q; let isCorrect = q.type === 'mcq' ? (idx === q.correct) : ((idx === 1) === q.answer);
+  const q = G.q; let isCorrect = (idx === q.correct);
   
   document.querySelectorAll('.opt').forEach((b, i) => {
     b.setAttribute('disabled', 'true');
-    const target = q.type === 'mcq' ? q.correct : (q.answer ? 1 : 0);
-    if (i === target) b.classList.add('ok'); else if (i === idx) b.classList.add('ng'); else b.classList.add('dm');
+    if (i === q.correct) b.classList.add('ok'); else if (i === idx) b.classList.add('ng'); else b.classList.add('dm');
   });
   processOutcome(isCorrect);
 }
@@ -813,7 +665,6 @@ function submitFill() {
   if (G.sel !== null) return;
   const input = $('fillan'); const userAns = input.value.trim().toLowerCase(); if (!userAns) return;
   G.sel = 1; input.setAttribute('disabled', 'true');
-  
   const isCorrect = (userAns === String(G.q.answer).toLowerCase());
   input.classList.add(isCorrect ? 'ok' : 'ng');
   if (!isCorrect) $('fill-reveal').textContent = `Answer: ${G.q.answer}`;
@@ -822,7 +673,7 @@ function submitFill() {
 
 function processOutcome(isCorrect) {
   const expBox = $('expl-box');
-  if (isCorrect) { G.score += 10; G.hits++; G.streak++; expBox.innerHTML = `<span class="expl-ok">Correct!</span> ${h(G.q.explanation)}`; }
+  if (isCorrect) { G.score += 10; G.streak++; expBox.innerHTML = `<span class="expl-ok">Correct!</span> ${h(G.q.explanation)}`; }
   else { G.lives--; G.streak = 0; expBox.innerHTML = `<span class="expl-ng">Incorrect.</span> ${h(G.q.explanation)}`; }
 
   $('hud-score').textContent = `${G.score} pts`;
@@ -835,23 +686,25 @@ function processOutcome(isCorrect) {
 }
 
 function endGame() {
-  app(`<div class="end"><div class="end-ic">🏆</div><h2 class="end-ti">Quest Completed</h2><div class="end-sc">${G.score}</div><button class="pa-btn" data-a="home">PLAY AGAIN</button></div>`);
-  animateTextInContainer($('app'));
+  app(`<div class="end" id="end-view"><div class="end-ic">🏆</div><h2 class="end-ti">Quest Completed</h2><div class="end-sc">${G.score} pts</div><button class="pa-btn" data-a="home">PLAY AGAIN</button></div>`);
+  animateTextInContainer($('end-view'));
 }
 
 /* INITIALIZER SPLASH ROUTINE CONTROL */
 window.addEventListener('DOMContentLoaded', () => {
   const splash = $('intro-splash');
   if (splash) {
-    splash.textContent = "Created by Pawan";
-    animateTextInContainer(splash);
+    const container = document.createElement('div');
+    container.className = 'splash-text-wrap';
+    container.textContent = "Created by Pawan";
+    splash.appendChild(container);
+    animateTextInContainer(container);
   }
 
   setTimeout(() => {
     renderHome(); 
     triggerBackgroundParticles(G.sub);
-    animateTextInContainer($('app')); 
-  }, 3300);
+  }, 4000);
 });
 </script>
 </body>
