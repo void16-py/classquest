@@ -28,6 +28,29 @@ body{
 
 #app{width:100%;max-width:640px}
 
+/* ENTRY TEXT REVEAL ANIMATIONS */
+@keyframes textReveal {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-1, .reveal-2, .reveal-3, .reveal-4, .reveal-5 {
+  opacity: 0;
+  animation: textReveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.reveal-1 { animation-delay: 0.1s; }
+.reveal-2 { animation-delay: 0.3s; }
+.reveal-3 { animation-delay: 0.5s; }
+.reveal-4 { animation-delay: 0.7s; }
+.reveal-5 { animation-delay: 0.9s; }
+
 /* HOME SCREEN BEAUTIFICATION */
 .home{display:flex;flex-direction:column;gap:28px;padding-top:14px}
 .brand{text-align:center;padding:12px 0 16px}
@@ -693,7 +716,6 @@ let G = {
   loading:false
 };
 
-/* Floating Elements & Dynamic BG Generator for All Subjects */
 function triggerBackgroundParticles(subject) {
   const oldParticles = document.querySelectorAll('.bg-particle');
   oldParticles.forEach(p => p.remove());
@@ -806,18 +828,18 @@ document.addEventListener('click', e=>{
     G.sub=v; 
     G.topics=[]; 
     triggerBackgroundParticles(v);
-    renderHome(); 
+    renderHome(false); // Do not re-trigger main animations on fast sub changes
   }
-  else if(a==='diff'){ G.diff=v; renderHome(); }
-  else if(a==='qtype'){ G.qtype=v; renderHome(); }
-  else if(a==='num'){ G.total=parseInt(v,10); renderHome(); }
+  else if(a==='diff'){ G.diff=v; renderHome(false); }
+  else if(a==='qtype'){ G.qtype=v; renderHome(false); }
+  else if(a==='num'){ G.total=parseInt(v,10); renderHome(false); }
   else if(a==='topic'){ toggleTopic(v); }
   else if(a==='clearTopics'){ G.topics=[]; renderTopics(); }
   else if(a==='start'){ startGame(); }
   else if(a==='ans'){ answer(parseInt(v,10)); }
   else if(a==='submitFill'){ submitFill(); }
   else if(a==='next'){ next(); }
-  else if(a==='home'){ renderHome(); }
+  else if(a==='home'){ renderHome(true); }
 });
 
 document.addEventListener('input', e=>{
@@ -831,7 +853,7 @@ document.addEventListener('change', e=>{
     let n = parseInt(e.target.value,10);
     if(isNaN(n)) n = TOTAL;
     G.total = Math.max(1, Math.min(MAX_TOTAL, n));
-    renderHome();
+    renderHome(false);
   }
 });
 
@@ -873,13 +895,19 @@ function toggleTopic(t){
   renderTopics();
 }
 
-function renderHome(){
+function renderHome(triggerAnims = false){
+  const c1 = triggerAnims ? 'reveal-1' : '';
+  const c2 = triggerAnims ? 'reveal-2' : '';
+  const c3 = triggerAnims ? 'reveal-3' : '';
+  const c4 = triggerAnims ? 'reveal-4' : '';
+  const c5 = triggerAnims ? 'reveal-5' : '';
+
   app(`<div class="home">
-    <div class="brand">
+    <div class="brand ${c1}">
       <div class="brand-name">ClassQuest</div>
       <div class="brand-sub">Class 9 · CBSE / NCERT</div>
     </div>
-    <div>
+    <div class="${c2}">
       <div class="sh">Choose a subject</div>
       <div class="lg-grid">
         ${SUBJECTS.map(s=>`<button class="lg-btn${G.sub===s.name?' on':''}" data-a="sub" data-v="${h(s.name)}">
@@ -887,8 +915,8 @@ function renderHome(){
         </button>`).join('')}
       </div>
     </div>
-    <div id="topics-wrap"></div>
-    <div>
+    <div id="topics-wrap" class="${c2}"></div>
+    <div class="${c3}">
       <div class="sh">Difficulty</div>
       <div class="df-row">
         ${DIFFS.map(d=>`<button class="df-btn${G.diff===d.name?' on':''}" data-a="diff" data-v="${h(d.name)}">
@@ -898,7 +926,7 @@ function renderHome(){
         </button>`).join('')}
       </div>
     </div>
-    <div>
+    <div class="${c4}">
       <div class="sh">Question type</div>
       <div class="qt-row">
         ${TYPES.map(t=>`<button class="df-btn qt-btn${G.qtype===t.val?' on':''}" data-a="qtype" data-v="${h(t.val)}">
@@ -908,7 +936,7 @@ function renderHome(){
         </button>`).join('')}
       </div>
     </div>
-    <div>
+    <div class="${c4}">
       <div class="sh">Number of questions <span class="sh-hint">pick or type any number (1–${MAX_TOTAL})</span></div>
       <div class="num-row">
         ${[5,10,15,20].map(n=>`<button class="num-btn${G.total===n?' on':''}" data-a="num" data-v="${n}">${n}</button>`).join('')}
@@ -917,12 +945,12 @@ function renderHome(){
                data-a="numinput" />
       </div>
     </div>
-    <div class="tip">
+    <div class="tip ${c5}">
       <b>🔥 Streak bonus</b> — 3+ correct in a row earns 20 pts per answer instead of 10.
       &nbsp;&nbsp;<b>❤️ Lives</b> — you have 3. Lose them all and the quest ends.
     </div>
-    <button class="go-btn" data-a="start">START QUEST →</button>
-    <div class="footer">${G.aiAvailable
+    <button class="go-btn ${c5}" data-a="start">START QUEST →</button>
+    <div class="footer ${c5}">${G.aiAvailable
         ? '🤖 AI questions ON · fresh questions every time'
         : '📚 Offline mode · '+(window.QUESTION_BANK||[]).length+' questions in the bank'}</div>
   </div>`);
@@ -1199,11 +1227,10 @@ function next(){
   }
 }
 
-// Initial Bootup Setup
 window.addEventListener('DOMContentLoaded', ()=>{
   detectAI().then(() => {
-    renderHome();
-    triggerBackgroundParticles('Maths'); // Initial boot default theme
+    renderHome(true); // pass true to trigger line-by-line initial delay float up animation
+    triggerBackgroundParticles('Maths');
   });
 });
 </script>
