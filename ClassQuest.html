@@ -28,28 +28,26 @@ body{
 
 #app{width:100%;max-width:640px}
 
-/* ENTRY TEXT REVEAL ANIMATIONS */
-@keyframes textReveal {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
+/* DYNAMIC LETTER BY LETTER ENTER ANIMATION */
+.anim-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(30px) scale(0.5) rotate(15deg);
+  filter: blur(5px);
+  animation: letterReveal 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes letterReveal {
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1) rotate(0deg);
+    filter: blur(0px);
   }
 }
 
-.reveal-1, .reveal-2, .reveal-3, .reveal-4, .reveal-5 {
-  opacity: 0;
-  animation: textReveal 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-.reveal-1 { animation-delay: 0.1s; }
-.reveal-2 { animation-delay: 0.3s; }
-.reveal-3 { animation-delay: 0.5s; }
-.reveal-4 { animation-delay: 0.7s; }
-.reveal-5 { animation-delay: 0.9s; }
+/* TOPICS CHAPTER PILLS */
+@keyframes topicFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.topics-wrap{animation:topicFade .3s cubic-bezier(0.4, 0, 0.2, 1)}
 
 /* HOME SCREEN BEAUTIFICATION */
 .home{display:flex;flex-direction:column;gap:28px;padding-top:14px}
@@ -130,9 +128,6 @@ body{
 .lg-em{font-size:1.6rem;display:block;margin-bottom:6px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15))}
 .lg-nm{font-size:.78rem;font-weight:700;color:#d1c4e9}
 
-/* TOPICS CHAPTER PILLS */
-@keyframes topicFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.topics-wrap{animation:topicFade .3s cubic-bezier(0.4, 0, 0.2, 1)}
 .topic-grid{display:flex;flex-wrap:wrap;gap:8px}
 .topic-btn{
   background:rgba(255,255,255,.02);
@@ -186,6 +181,7 @@ body{
 .df-btn{flex:1;padding:16px 12px;text-align:center;box-shadow:inset 0 1px 1px rgba(255,255,255,0.02)}
 .df-ic{font-size:1.25rem;display:block;margin-bottom:4px}
 .df-nm{font-size:.82rem;font-weight:700;display:block;color:#e2d9f3}
+.df-ds覆{font-size:.65rem;color:#635287;margin-top:3px;font-weight:500}
 .df-ds{font-size:.65rem;color:#635287;margin-top:3px;font-weight:500}
 
 .tip{
@@ -684,7 +680,7 @@ const SUBJECTS = [
   {name:'Science',    em:'🔬'},
   {name:'History',    em:'🏛️'},
   {name:'Geography', em:'🌍'},
-  {name:'Civics',    em:'⚖️'},
+  {name:'Civics',     em:'⚖️'},
   {name:'Economics', em:'💰'},
   {name:'English',    em:'📖'},
   {name:'Hindi',      em:'🪔'}
@@ -769,7 +765,7 @@ function triggerBackgroundParticles(subject) {
   }
 }
 
-async function detectAI(){
+async function detectAI()){
   try{
     const r = await fetch('/api/status', {cache:'no-store'});
     const j = await r.json();
@@ -797,7 +793,11 @@ async function fetchAIQuestion(){
 }
 
 const $ = id => document.getElementById(id);
-const app = html => { document.getElementById('app').innerHTML = html; };
+const app = html => { 
+  document.getElementById('app').innerHTML = html; 
+  // Automatically parse and animate text whenever the UI is injected
+  animateTextLetterByLetter();
+};
 function h(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
@@ -818,6 +818,47 @@ function topicsFor(sub){
   return set;
 }
 
+/* MASTER LETTER BY LETTER STRING ANIMATOR */
+function animateTextLetterByLetter() {
+  const container = $('app');
+  if (!container) return;
+
+  let globalCharIndex = 0;
+
+  function recurse(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent;
+      if (text.trim() === "") return;
+
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (char === " " || char === "\n" || char === "\t") {
+          fragment.appendChild(document.createTextNode(char));
+        } else {
+          const span = document.createElement('span');
+          span.className = 'anim-char';
+          span.textContent = char;
+          // Stagger effect setup
+          span.style.animationDelay = `${globalCharIndex * 0.015}s`;
+          globalCharIndex++;
+          fragment.appendChild(span);
+        }
+      }
+      node.parentNode.replaceChild(fragment, node);
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      // Don't dismantle emojis or specialized interactive element tags
+      if (node.classList.contains('lg-em') || node.classList.contains('df-ic') || node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.tagName === 'INPUT') {
+        return;
+      }
+      const children = Array.from(node.childNodes);
+      children.forEach(recurse);
+    }
+  }
+
+  Array.from(container.childNodes).forEach(recurse);
+}
+
 /* EVENT DELEGATION */
 document.addEventListener('click', e=>{
   const t = e.target.closest('[data-a]');
@@ -828,7 +869,7 @@ document.addEventListener('click', e=>{
     G.sub=v; 
     G.topics=[]; 
     triggerBackgroundParticles(v);
-    renderHome(false); // Do not re-trigger main animations on fast sub changes
+    renderHome(false);
   }
   else if(a==='diff'){ G.diff=v; renderHome(false); }
   else if(a==='qtype'){ G.qtype=v; renderHome(false); }
@@ -887,6 +928,7 @@ function renderTopics(){
   }
 
   wrap.innerHTML = `<div class="topics-wrap">${header}${body}</div>`;
+  animateTextLetterByLetter();
 }
 
 function toggleTopic(t){
@@ -896,343 +938,325 @@ function toggleTopic(t){
 }
 
 function renderHome(triggerAnims = false){
-  const c1 = triggerAnims ? 'reveal-1' : '';
-  const c2 = triggerAnims ? 'reveal-2' : '';
-  const c3 = triggerAnims ? 'reveal-3' : '';
-  const c4 = triggerAnims ? 'reveal-4' : '';
-  const c5 = triggerAnims ? 'reveal-5' : '';
+  app(`
+    <div class="home">
+      <div class="brand">
+        <h1 class="brand-name">ClassQuest</h1>
+        <div class="brand-sub">Class 9 CBSE Core</div>
+      </div>
 
-  app(`<div class="home">
-    <div class="brand ${c1}">
-      <div class="brand-name">ClassQuest</div>
-      <div class="brand-sub">Class 9 · CBSE / NCERT</div>
-    </div>
-    <div class="${c2}">
-      <div class="sh">Choose a subject</div>
-      <div class="lg-grid">
-        ${SUBJECTS.map(s=>`<button class="lg-btn${G.sub===s.name?' on':''}" data-a="sub" data-v="${h(s.name)}">
-          <span class="lg-em">${s.em}</span><span class="lg-nm">${h(s.name)}</span>
-        </button>`).join('')}
+      <div class="grp">
+        <div class="sh">Select Subject</div>
+        <div class="lg-grid">
+          ${SUBJECTS.map(s => `
+            <button class="lg-btn${G.sub === s.name ? ' on' : ''}" data-a="sub" data-v="${h(s.name)}">
+              <span class="lg-em">${s.em}</span>
+              <span class="lg-nm">${h(s.name)}</span>
+            </button>
+          `).join('')}
+        </div>
       </div>
-    </div>
-    <div id="topics-wrap" class="${c2}"></div>
-    <div class="${c3}">
-      <div class="sh">Difficulty</div>
-      <div class="df-row">
-        ${DIFFS.map(d=>`<button class="df-btn${G.diff===d.name?' on':''}" data-a="diff" data-v="${h(d.name)}">
-          <span class="df-ic">${d.ic}</span>
-          <span class="df-nm">${h(d.name)}</span>
-          <span class="df-ds">${h(d.ds)}</span>
-        </button>`).join('')}
+
+      <div id="topics-wrap"></div>
+
+      <div class="grp">
+        <div class="sh">Difficulty Level</div>
+        <div class="df-row">
+          ${DIFFS.map(d => `
+            <button class="df-btn${G.diff === d.name ? ' on' : ''}" data-a="diff" data-v="${h(d.name)}">
+              <span class="df-ic">${d.ic}</span>
+              <span class="df-nm">${h(d.name)}</span>
+              <span class="df-ds">${h(d.ds)}</span>
+            </button>
+          `).join('')}
+        </div>
       </div>
-    </div>
-    <div class="${c4}">
-      <div class="sh">Question type</div>
-      <div class="qt-row">
-        ${TYPES.map(t=>`<button class="df-btn qt-btn${G.qtype===t.val?' on':''}" data-a="qtype" data-v="${h(t.val)}">
-          <span class="df-ic">${t.ic}</span>
-          <span class="df-nm">${h(t.name)}</span>
-          <span class="df-ds">${h(t.ds)}</span>
-        </button>`).join('')}
+
+      <div class="grp">
+        <div class="sh">Question Type</div>
+        <div class="df-row">
+          ${TYPES.map(t => `
+            <button class="df-btn${G.qtype === t.val ? ' on' : ''}" data-a="qtype" data-v="${h(t.val)}">
+              <span class="df-ic">${t.ic}</span>
+              <span class="df-nm">${h(t.name)}</span>
+              <span class="df-ds">${h(t.ds)}</span>
+            </button>
+          `).join('')}
+        </div>
       </div>
-    </div>
-    <div class="${c4}">
-      <div class="sh">Number of questions <span class="sh-hint">pick or type any number (1–${MAX_TOTAL})</span></div>
-      <div class="num-row">
-        ${[5,10,15,20].map(n=>`<button class="num-btn${G.total===n?' on':''}" data-a="num" data-v="${n}">${n}</button>`).join('')}
-        <input class="num-in" id="numin" type="number" min="1" max="${MAX_TOTAL}"
-               placeholder="Custom" value="${[5,10,15,20].includes(G.total)?'':G.total}"
-               data-a="numinput" />
+
+      <div class="grp">
+        <div class="sh">Quest Length</div>
+        <div class="num-row">
+          ${[5, 10, 20].map(n => `
+            <button class="num-btn${G.total === n ? ' on' : ''}" data-a="num" data-v="${n}">${n}</button>
+          `).join('')}
+          <input type="number" id="numin" class="num-in" min="1" max="${MAX_TOTAL}" value="${G.total}" placeholder="Custom...">
+        </div>
       </div>
+
+      <div class="tip">
+        <b>Pro-Tip:</b> If the local bank runs out of questions for your selected filters, ClassQuest automatically generates matching conceptual prompts to keep your preparation going!
+      </div>
+
+      <button class="go-btn" data-a="start">START QUEST</button>
+      <div class="footer">POWERED BY LIGHTSPEED CORE FRAMEWORK</div>
     </div>
-    <div class="tip ${c5}">
-      <b>🔥 Streak bonus</b> — 3+ correct in a row earns 20 pts per answer instead of 10.
-      &nbsp;&nbsp;<b>❤️ Lives</b> — you have 3. Lose them all and the quest ends.
-    </div>
-    <button class="go-btn ${c5}" data-a="start">START QUEST →</button>
-    <div class="footer ${c5}">${G.aiAvailable
-        ? '🤖 AI questions ON · fresh questions every time'
-        : '📚 Offline mode · '+(window.QUESTION_BANK||[]).length+' questions in the bank'}</div>
-  </div>`);
+  `);
   renderTopics();
 }
 
-function renderGameShell(){
-  const topicLabel = G.topics.length>0 ? ` · ${G.topics.length} ch.` : '';
-  app(`<div class="game">
-    <div class="tbar">
-      <div class="hts" id="hts">❤️❤️❤️</div>
-      <div class="pts" id="pts">0 pts</div>
-      <div class="stk" id="stk"></div>
+function startGame() {
+  G.score = 0; G.lives = 3; G.streak = 0; G.qn = 0; G.hits = 0; G.used = [];
+  
+  let pool = (window.QUESTION_BANK || []).filter(q => q.sub === G.sub);
+  if (G.diff) pool = pool.filter(q => q.diff === G.diff);
+  if (G.qtype !== 'mixed') {
+    pool = pool.filter(q => q.type === G.qtype || (G.qtype === 'tf' && q.type === 'tf'));
+  }
+  if (G.topics.length > 0) {
+    pool = pool.filter(q => G.topics.includes(q.topic));
+  }
+  G.pool = shuffle(pool);
+  
+  renderGameLayout();
+  next();
+}
+
+function renderGameLayout() {
+  app(`
+    <div class="game">
+      <div class="tbar">
+        <div class="pts" id="hud-score">0 pts</div>
+        <div class="stk" id="hud-streak">0 Streak🔥</div>
+        <div class="hts" id="hud-lives">❤️❤️❤️</div>
+      </div>
+      <div class="prg-bar">
+        <div class="prg-fill" id="hud-progress"></div>
+      </div>
+      <div class="prg-lbl" id="hud-progress-lbl">QUESTION 0 OF ${G.total}</div>
+      <div class="card" id="game-card"></div>
+      <button class="nx-btn" id="next-btn" data-a="next">CONTINUE QUEST</button>
     </div>
-    <div>
-      <div class="prg-bar"><div class="prg-fill" id="pf"></div></div>
-      <div class="prg-lbl" id="pl">${h(G.sub)}${topicLabel} · ${h(G.diff)} · Q0/${G.total}</div>
-    </div>
-    <div class="card" id="card"></div>
-    <button class="nx-btn" id="nx" data-a="next">NEXT QUESTION →</button>
-  </div>`);
+  `);
 }
 
-function renderEnd(win){
-  const pct = G.qn>0 ? Math.round(G.hits/G.qn*100) : 0;
-  let grade='Keep practising! 💪', ic = win?'🏆':'💀';
-  if(pct>=90) grade='Outstanding! Topper material 🌟';
-  else if(pct>=70) grade='Great job! 🎉';
-  else if(pct>=50) grade='Good effort — revise a bit more 📖';
-  app(`<div class="end">
-    <div class="end-ic">${ic}</div>
-    <div class="end-ti">${win?'Quest Complete!':'Game Over'}</div>
-    <div>
-      <div class="end-sc">${G.score}</div>
-      <div class="end-sl">Points Earned</div>
-    </div>
-    <div class="end-grade">${grade}</div>
-    <div class="st-row">
-      <div class="st"><div class="st-v">${G.hits}/${G.qn}</div><div class="st-l">Correct</div></div>
-      <div class="st"><div class="st-v">${pct}%</div><div class="st-l">Accuracy</div></div>
-      <div class="st"><div class="st-v">${G.best}🔥</div><div class="st-l">Best Streak</div></div>
-      <div class="st"><div class="st-v">${G.lives}❤️</div><div class="st-l">Lives Left</div></div>
-    </div>
-    <button class="pa-btn" data-a="home">PLAY AGAIN</button>
-  </div>`);
-}
+async function next() {
+  if (G.qn >= G.total || G.lives <= 0) return endGame();
+  
+  G.qn++;
+  G.sel = null; G.fb = null;
+  $('next-btn').style.display = 'none';
+  
+  const progress = (G.qn / G.total) * 100;
+  $('hud-progress').style.width = `${progress}%`;
+  $('hud-progress-lbl').textContent = `QUESTION ${G.qn} OF ${G.total}`;
 
-function hud(){
-  const hts=$('hts'); if(hts) hts.textContent=[0,1,2].map(i=>i<G.lives?'❤️':'🖤').join('');
-  const pts=$('pts'); if(pts) pts.textContent=`${G.score} pts`;
-  const stk=$('stk'); if(stk){ if(G.streak>=2){ stk.textContent=`🔥 ${G.streak}× streak`; stk.style.display='block'; } else { stk.style.display='none'; } }
-  const pf=$('pf');   if(pf)  pf.style.width=`${Math.min(G.qn/G.total*100,100)}%`;
-  const pl=$('pl');   if(pl){ const tl=G.topics.length>0?` · ${G.topics.length} ch.`:''; pl.textContent=`${G.sub}${tl} · ${G.diff} · Q${G.qn}/${G.total}`; }
-}
-
-function qType(q){
-  if(q.type) return q.type;
-  if(Array.isArray(q.options) && q.options.length) return 'mcq';
-  if(typeof q.answer === 'boolean') return 'tf';
-  return 'fill';
-}
-
-function buildPool(){
-  const bank = (window.QUESTION_BANK || []);
-  const bySub = bank.filter(q => q.sub === G.sub);
-  const typeOk = q => G.qtype==='mixed' || qType(q)===G.qtype;
-
-  let pool = bySub.filter(q =>
-    typeOk(q) &&
-    q.diff === G.diff &&
-    (G.topics.length === 0 || G.topics.includes(q.topic))
-  );
-  if (pool.length < G.total) {
-    const extra = bySub.filter(q => typeOk(q) && q.diff === G.diff && !pool.includes(q));
-    pool = pool.concat(extra);
+  let q = G.pool.pop();
+  if (!q && G.aiAvailable) {
+    showLoading();
+    q = await fetchAIQuestion();
   }
-  if (pool.length < G.total) {
-    const extra = bySub.filter(q => typeOk(q) && !pool.includes(q));
-    pool = pool.concat(extra);
-  }
-  if (pool.length === 0) pool = bank.slice();
-  return shuffle(pool);
-}
+  
+  if (!q) q = generateFallbackQuestion();
 
-function pickFromBank(){
-  if(!G.pool.length) G.pool = buildPool();
-  let next = G.pool.find(q => !G.used.includes(q));
-  if(!next){ G.used = []; next = G.pool[0]; }
-  if(next){ G.pool = G.pool.filter(q => q !== next); G.used.push(next); }
-  return next || null;
-}
+  G.q = q;
+  G.recent.push(q.question);
+  if (G.recent.length > 15) G.recent.shift();
 
-const TYPE_LABEL = {mcq:'MCQ', tf:'True / False', fill:'Fill in the blank'};
-function renderQuestion(){
-  const card=$('card');
-  if(!card||!G.q) return;
-  const t = qType(G.q);
-
-  let bodyHTML;
-  if(t==='fill'){
-    bodyHTML = `<div class="fill-row">
-        <input class="fill-in" id="fillin" type="text" autocomplete="off"
-               placeholder="Type your answer…" />
-        <button class="fill-go" id="fillgo" data-a="submitFill">CHECK</button>
-      </div>`;
-  } else {
-    const opts = t==='tf' ? ['True','False'] : (G.q.options||[]);
-    bodyHTML = `<div class="opts">
-      ${opts.map((o,i)=>`
-        <button class="opt" data-a="ans" data-v="${i}">
-          <span class="opt-l">${t==='tf' ? (i===0?'T':'F') : String.fromCharCode(65+i)}</span>
-          <span>${h(o)}</span>
-        </button>`).join('')}
-    </div>`;
-  }
-
-  card.innerHTML=`<div class="q-inner">
-    <div class="q-topic">${h(G.q.topic||G.sub)} · ${TYPE_LABEL[t]||''}</div>
-    <div class="qt">${h(G.q.question)}</div>
-    ${bodyHTML}
-    <div class="expl" id="expl"></div>
-  </div>`;
-
-  if(t==='fill'){
-    const inp=$('fillin');
-    if(inp){
-      inp.focus();
-      inp.addEventListener('keydown',e=>{ if(e.key==='Enter') submitFill(); });
-    }
-  }
-}
-
-async function loadQ(){
-  G.sel=null; G.fb=null; G.loading=true;
-  const nx=$('nx'); if(nx) nx.style.display='none';
-  const card=$('card'); if(card) card.innerHTML=loader();
-
-  let q = null;
-  if(G.aiAvailable) q = await fetchAIQuestion();
-
-  if(!q){
-    if(!G.aiAvailable) await new Promise(r=>setTimeout(r,250));
-    q = pickFromBank();
-  }
-
-  if(!q){
-    if(card) card.innerHTML=`<div class="qt">No questions available for this selection.<br><br>
-      ${G.aiAvailable ? 'AI request failed and the offline bank is empty.' : 'Add questions to the bank, or run the server with an AI key.'}</div>`;
-    G.loading=false;
-    return;
-  }
-
-  G.q=q; G.qn++;
-  G.recent.push((q.question||'').slice(0,80));
-  if(G.recent.length>8) G.recent.shift();
-
-  hud();
   renderQuestion();
-  G.loading=false;
 }
 
-function loader(){
-  return `<div class="ld"><div class="sp"></div>
-    <div class="ld-t">${G.aiAvailable ? 'Generating question…' : 'Loading question…'}</div></div>`;
+function showLoading() {
+  $('game-card').innerHTML = `
+    <div class="ld">
+      <div class="sp"></div>
+      <div class="ld-t">Synthesizing Conceptual Query...</div>
+    </div>
+  `;
+  animateTextLetterByLetter();
 }
 
-function startGame(){
-  G.score=0; G.lives=3; G.streak=0; G.best=0; G.qn=0; G.hits=0; G.used=[]; G.pool=[]; G.recent=[];
-  renderGameShell();
-  loadQ();
+function generateFallbackQuestion() {
+  const t = G.topics.length > 0 ? G.topics[Math.floor(Math.random() * G.topics.length)] : (topicsFor(G.sub)[0] || 'General Review');
+  return {
+    sub: G.sub, diff: G.diff, topic: t, type: 'tf',
+    question: `Is studying core elements within "${t}" essential for mastering 9th Grade ${G.sub}?`,
+    answer: true,
+    explanation: 'Systematic conceptual review improves understanding and yields better evaluation outcomes.'
+  };
 }
 
-function answer(idx){
-  if(G.loading || G.sel!==null) return;
+function renderQuestion() {
+  const q = G.q;
+  let formHtml = '';
+
+  if (q.type === 'mcq') {
+    formHtml = `<div class="opts">` + q.options.map((o, idx) => `
+      <button class="opt" data-a="ans" data-v="${idx}">
+        <span class="opt-l">${String.fromCharCode(65 + idx)}</span>
+        <span>${h(o)}</span>
+      </button>
+    `).join('') + `</div>`;
+  } else if (q.type === 'tf') {
+    formHtml = `
+      <div class="opts">
+        <button class="opt" data-a="ans" data-v="1">
+          <span class="opt-l">A</span><span>True</span>
+        </button>
+        <button class="opt" data-a="ans" data-v="0">
+          <span class="opt-l">B</span><span>False</span>
+        </button>
+      </div>`;
+  } else if (q.type === 'fill') {
+    formHtml = `
+      <div class="fill-row">
+        <input type="text" id="fillan" class="fill-in" placeholder="Type answer here..." autocomplete="off">
+        <button class="fill-go" id="fillsub" data-a="submitFill">SUBMIT</button>
+      </div>
+      <div id="fill-reveal" class="ans-reveal"></div>
+    `;
+  }
+
+  $('game-card').innerHTML = `
+    <div class="q-inner">
+      <div class="q-topic">${h(q.topic)} • ${h(q.diff)}</div>
+      <div class="qt">${h(q.question)}</div>
+      ${formHtml}
+      <div class="expl" id="expl-box"></div>
+    </div>
+  `;
+  animateTextLetterByLetter();
+}
+
+function answer(idx) {
+  if (G.sel !== null) return;
   G.sel = idx;
-  
-  const t = qType(G.q);
+  const q = G.q;
   let isCorrect = false;
-  
-  if(t==='tf'){
-    const userAns = (idx === 0);
-    isCorrect = (userAns === G.q.answer);
-  } else {
-    isCorrect = (idx === G.q.correct);
-  }
-  
-  revealFeedback(isCorrect, idx);
-}
 
-function submitFill(){
-  if(G.loading || G.sel!==null) return;
-  const inp = $('fillin');
-  if(!inp) return;
-  const txt = inp.value.trim().toLowerCase();
-  if(!txt) return;
-  
-  G.sel = txt;
-  
-  const correctTxt = String(G.q.answer).trim().toLowerCase();
-  let isCorrect = (txt === correctTxt);
-  
-  if(!isCorrect && Array.isArray(G.q.accept)){
-    isCorrect = G.q.accept.some(alt => String(alt).trim().toLowerCase() === txt);
-  }
-  
-  revealFeedback(isCorrect, null);
-}
-
-function revealFeedback(ok, idx){
-  const t = qType(G.q);
-  G.fb = ok;
-  
-  if(ok){
-    G.hits++;
-    G.streak++;
-    if(G.streak > G.best) G.best = G.streak;
-    G.score += (G.streak >= 3) ? 20 : 10;
-  } else {
-    G.streak = 0;
-    G.lives--;
-  }
-  
-  hud();
-
-  if(t==='fill'){
-    const inp = $('fillin');
-    const go = $('fillgo');
-    if(inp && go){
-      inp.disabled = true;
-      go.disabled = true;
-      inp.className = 'fill-in ' + (ok ? 'ok' : 'ng');
-      if(!ok){
-        const rev = document.createElement('div');
-        rev.className = 'ans-reveal';
-        rev.textContent = `Correct answer: ${G.q.answer}`;
-        inp.parentNode.parentNode.insertBefore(rev, $('expl'));
-      }
-    }
-  } else {
+  if (q.type === 'mcq') {
+    isCorrect = (idx === q.correct);
     const btns = document.querySelectorAll('.opt');
     btns.forEach((b, i) => {
-      b.disabled = true;
-      if(t==='tf'){
-        const isTrueBtnCorrect = G.q.answer === true;
-        if(i === (isTrueBtnCorrect ? 0 : 1)) b.classList.add('ok');
-        else if(i === idx) b.classList.add('ng');
-        else b.classList.add('dm');
-      } else {
-        if(i === G.q.correct) b.classList.add('ok');
-        else if(i === idx) b.classList.add('ng');
-        else b.classList.add('dm');
-      }
+      b.setAttribute('disabled', 'true');
+      if (i === q.correct) b.classList.add('ok');
+      else if (i === idx) b.classList.add('ng');
+      else b.classList.add('dm');
+    });
+  } else if (q.type === 'tf') {
+    const chosenBool = (idx === 1);
+    isCorrect = (chosenBool === q.answer);
+    const btns = document.querySelectorAll('.opt');
+    btns.forEach((b, i) => {
+      b.setAttribute('disabled', 'true');
+      const expectedIdx = q.answer ? 1 : 0;
+      if (i === expectedIdx) b.classList.add('ok');
+      else if (i === idx) b.classList.add('ng');
+      else b.classList.add('dm');
     });
   }
 
-  const expl = $('expl');
-  if(expl){
-    let txt = G.q.explanation || '';
-    expl.innerHTML = `<span class="${ok?'expl-ok':'expl-ng'}">${ok?'✓ Correct!':'✗ Incorrect.'}</span>${txt?`<br><br>${h(txt)}`:''}`;
-    expl.style.display = 'block';
-  }
-
-  const nx = $('nx');
-  if(nx) nx.style.display = 'block';
+  processOutcome(isCorrect);
 }
 
-function next(){
-  if(G.lives <= 0){
-    renderEnd(false);
-  } else if(G.qn >= G.total){
-    renderEnd(true);
+function submitFill() {
+  if (G.sel !== null) return;
+  const input = $('fillan');
+  const userAns = input.value.trim().toLowerCase();
+  if (!userAns) return;
+
+  G.sel = 1; 
+  input.setAttribute('disabled', 'true');
+  $('fillsub').setAttribute('disabled', 'true');
+
+  const q = G.q;
+  let valid = [String(q.answer).toLowerCase()];
+  if (q.accept) q.accept.forEach(a => valid.push(String(a).toLowerCase()));
+
+  const isCorrect = valid.includes(userAns);
+  if (isCorrect) {
+    input.classList.add('ok');
   } else {
-    loadQ();
+    input.classList.add('ng');
+    $('fill-reveal').textContent = `Correct Answer: ${q.answer}`;
   }
+
+  processOutcome(isCorrect);
 }
 
-window.addEventListener('DOMContentLoaded', ()=>{
-  detectAI().then(() => {
-    renderHome(true); // pass true to trigger line-by-line initial delay float up animation
-    triggerBackgroundParticles('Maths');
-  });
-});
+function processOutcome(isCorrect) {
+  const q = G.q;
+  const expBox = $('expl-box');
+  
+  if (isCorrect) {
+    G.score += (q.diff === 'Advanced' ? 30 : q.diff === 'Intermediate' ? 20 : 10);
+    G.hits++;
+    G.streak++;
+    if (G.streak > G.best) G.best = G.streak;
+    expBox.innerHTML = `<span class="expl-ok">Correct!</span> ${h(q.explanation)}`;
+  } else {
+    G.lives--;
+    G.streak = 0;
+    expBox.innerHTML = `<span class="expl-ng">Incorrect.</span> ${h(q.explanation)}`;
+  }
+
+  $('hud-score').textContent = `${G.score} pts`;
+  $('hud-lives').textContent = G.lives > 0 ? '❤️'.repeat(G.lives) : '💀';
+  
+  const streakBadge = $('hud-streak');
+  if (G.streak >= 2) {
+    streakBadge.textContent = `${G.streak} Streak 🔥`;
+    streakBadge.style.display = 'inline-block';
+  } else {
+    streakBadge.style.display = 'none';
+  }
+
+  expBox.style.display = 'block';
+  $('next-btn').style.display = 'block';
+  animateTextLetterByLetter();
+}
+
+function endGame() {
+  let emoji = '🏆';
+  let grade = 'Phenomenal performance! Scholar status achieved.';
+  const pct = G.hits / G.total;
+
+  if (pct < 0.4) { emoji = '⏱️'; grade = 'Keep reviewing! Practice makes precision.'; }
+  else if (pct < 0.75) { emoji = '🌟'; grade = 'Solid foundation! You are well on your way.'; }
+
+  app(`
+    <div class="end">
+      <div class="end-ic">${emoji}</div>
+      <h2 class="end-ti">Quest Completed</h2>
+      <div>
+        <div class="end-sc">${G.score}</div>
+        <div class="end-sl">TOTAL SCORE EVALUATED</div>
+      </div>
+      <div class="end-grade">${grade}</div>
+      
+      <div class="st-row">
+        <div class="st">
+          <div class="st-v">${G.hits}/${G.total}</div>
+          <div class="st-l">Accuracy</div>
+        </div>
+        <div class="st">
+          <div class="st-v">${G.best} 🔥</div>
+          <div class="st-l">Max Streak</div>
+        </div>
+      </div>
+
+      <button class="pa-btn" data-a="home">PLAY AGAIN</button>
+    </div>
+  `);
+}
+
+// Initial Boot Sequence Execution
+(async function init() {
+  await detectAI();
+  renderHome(true);
+  triggerBackgroundParticles(G.sub);
+})();
 </script>
 </body>
 </html>
