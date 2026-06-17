@@ -526,7 +526,7 @@ window.QUESTION_BANK = [
     sub: 'Hindi', diff: 'Beginner', topic: 'दो बैलों की कथा', type: 'mcq',
     question: 'प्रेमचंद द्वारा रचित कहानी "दो बैलों की कथा" में बैलों के नाम क्या हैं?',
     options: ['सोना और चांदी', 'हीरा और मोती', 'जय और वीरू', 'राम और श्याम'], correct: 1,
-    explanation: 'कहानी के मुख्य पात्र दो बैल हैं जिनका नाम हीरा और मोती है।'
+    explanation: 'कहानी के मुख्य पात्र दो बैल हैं जिनका नाम हीरा और मोती hai।'
   }
 ];
 </script>
@@ -640,7 +640,7 @@ function animateTextInContainer(target) {
           const span = document.createElement('span');
           span.className = `anim-char ${randomDir}`;
           span.textContent = char;
-          span.style.animationDelay = `${globalCharIndex * 0.06}s`;
+          span.style.animationDelay = `${globalCharIndex * 0.05}s`;
           globalCharIndex++;
           fragment.appendChild(span);
         }
@@ -724,7 +724,7 @@ function renderHome(){
       <div class="grp">
         <div class="sh">Quest Length</div>
         <div class="num-row">
-          ${[5, 10, 20].map(n => `<button class="num-btn${G.total === n ? ' on' : ''}" data-a="num" data-v="${n}">${n}</button>join('')}
+          ${[5, 10, 20].map(n => `<button class="num-btn${G.total === n ? ' on' : ''}" data-a="num" data-v="${n}">${n}</button>`).join('')}
         </div>
       </div>
       <button class="go-btn" data-a="start">START QUEST</button>
