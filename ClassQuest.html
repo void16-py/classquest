@@ -26,21 +26,50 @@ body{
   transition: background 0.5s ease; 
 }
 
-#app{width:100%;max-width:640px}
+/* INTRO SPLASH SCREEN STYLES */
+#intro-splash {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: #090514;
+  display: flex; align-items: center; justify-content: center;
+  color: #c4b5fd; font-size: 2.5rem; font-weight: 950; letter-spacing: 2px;
+  z-index: 9999; pointer-events: none;
+  animation: splashFadeOut 0.6s ease 3s forwards; 
+}
 
-/* DYNAMIC LETTER BY LETTER ENTER ANIMATION */
+@keyframes splashFadeOut {
+  to { opacity: 0; visibility: hidden; filter: blur(10px); }
+}
+
+/* MAIN APP WINDOW CONTAINER */
+#app{
+  width:100%;max-width:640px;
+  opacity: 0;
+  animation: appReveal 0.5s ease 3.3s forwards;
+}
+
+@keyframes appReveal {
+  to { opacity: 1; }
+}
+
+/* DYNAMIC DIRECTIONAL LETTER BY LETTER ANIMATION */
 .anim-char {
   display: inline-block;
   opacity: 0;
-  transform: translateY(25px) scale(0.6) rotate(10deg);
   filter: blur(4px);
-  animation: letterReveal 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+  animation: letterReveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
 }
+
+/* Four distinct starting states for letters */
+.from-top    { transform: translateY(-40px) scale(0.6); }
+.from-bottom { transform: translateY(40px) scale(0.6); }
+.from-left   { transform: translateX(-40px) scale(0.6); }
+.from-right  { transform: translateX(40px) scale(0.6); }
 
 @keyframes letterReveal {
   to {
     opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
+    transform: translate(0, 0) scale(1);
     filter: blur(0px);
   }
 }
@@ -49,19 +78,20 @@ body{
 @keyframes topicFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .topics-wrap{animation:topicFade .3s cubic-bezier(0.4, 0, 0.2, 1)}
 
-/* HOME SCREEN BEAUTIFICATION */
+/* HOME SCREEN ULTRA BEAUTIFICATION */
 .home{display:flex;flex-direction:column;gap:28px;padding-top:14px}
 .brand{text-align:center;padding:12px 0 16px}
 .brand-name{
   font-size:3.5rem;
-  font-weight:900;
+  font-weight: 950;
   letter-spacing:-2px;
   line-height:1;
   background:linear-gradient(135deg, #c4b5fd 0%, #a78bfa 35%, #f472b6 100%);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
   background-clip:text;
-  filter:drop-shadow(0 2px 8px rgba(167,139,250,0.2));
+  -webkit-text-stroke: 1.2px rgba(196, 181, 253, 0.4);
+  filter: drop-shadow(0 0 20px rgba(167,139,250,0.6)) drop-shadow(0 2px 4px rgba(0,0,0,0.5));
 }
 .brand-sub{
   margin-top:10px;
@@ -69,7 +99,7 @@ body{
   font-weight:800;
   letter-spacing:5px;
   text-transform:uppercase;
-  color:#6d5c94;
+  color:#8572b4;
 }
 
 .sh{
@@ -97,31 +127,32 @@ body{
 }
 .sh-hint{font-size:.68rem;font-weight:500;color:#524375;text-transform:none;letter-spacing:0}
 
-/* GRID & BUTTON DESIGNS */
+/* PREMIUM GLASSMORPHISM GRID & BUTTON DESIGNS */
 .lg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .lg-btn, .df-btn, .num-btn, .num-in{
-  background:rgba(255,255,255,.02);
-  border:1px solid rgba(255,255,255,.06);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius:16px;
   cursor:pointer;
-  transition:all .2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:all .25s cubic-bezier(0.4, 0, 0.2, 1);
   color:#f1ecfb;
   font-family:inherit;
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255,255,255,0.05);
 }
 
-.lg-btn{padding:18px 10px;text-align:center;box-shadow:inset 0 1px 1px rgba(255,255,255,0.03)}
+.lg-btn{padding:18px 10px;text-align:center;}
 .lg-btn:hover, .df-btn:hover, .num-btn:hover{
-  background:rgba(167,139,250,.07);
-  border-color:rgba(167,139,250,.35);
-  transform:translateY(-2px);
-  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  background:rgba(167,139,250,.12);
+  border-color: rgba(244,114,182,0.6);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
 }
 .lg-btn.on, .df-btn.on, .num-btn.on{
-  background:linear-gradient(135deg, rgba(167,139,250,.18), rgba(244,114,182,.06));
+  background:linear-gradient(135deg, rgba(167,139,250,.25), rgba(244,114,182,.12));
   border-color:#a78bfa;
-  box-shadow:0 0 20px rgba(167,139,250,.25), inset 0 1px 1px rgba(255,255,255,0.1);
+  box-shadow:0 0 25px rgba(167,139,250,.35), inset 0 1px 1px rgba(255,255,255,0.2);
   transform:translateY(-1px);
 }
 
@@ -178,7 +209,7 @@ body{
 .num-in:focus{border-color:#a78bfa;background:rgba(167,139,250,.05);box-shadow:0 0 12px rgba(167,139,250,0.15)}
 .num-in::placeholder{color:#4e3d6f;font-weight:600}
 
-.df-btn{flex:1;padding:16px 12px;text-align:center;box-shadow:inset 0 1px 1px rgba(255,255,255,0.02)}
+.df-btn{flex:1;padding:16px 12px;text-align:center;}
 .df-ic{font-size:1.25rem;display:block;margin-bottom:4px}
 .df-nm{font-size:.82rem;font-weight:700;display:block;color:#e2d9f3}
 .df-ds{font-size:.65rem;color:#635287;margin-top:3px;font-weight:500}
@@ -244,7 +275,7 @@ body{
 .q-topic{font-size:.62rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;margin-bottom:12px;opacity:.9}
 .qt{font-size:1.1rem;font-weight:600;line-height:1.7;color:#f1ecfb;margin-bottom:20px}
 
-/* OPTIONS BEAUTIFICATION */
+/* OPTIONS ULTRA DESIGN */
 .opts{display:flex;flex-direction:column;gap:10px}
 .opt{
   display:flex;align-items:center;gap:14px;padding:14px 18px;
@@ -349,7 +380,7 @@ body{
 
 .footer{text-align:center;font-size:.62rem;color:#3f325c;margin-top:14px;letter-spacing:1px;font-weight:600}
 
-/* HIGH PERFORMANCE FLOATING PARTICLES */
+/* FLOATING BG PARTICLES */
 .bg-particle {
   position: fixed;
   pointer-events: none;
@@ -366,25 +397,16 @@ body{
 }
 
 @keyframes floatUp {
-  0% {
-    transform: translateY(0) scale(0.6) rotate(0deg);
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.8;
-    transform: translateY(-20vh) scale(1) rotate(45deg);
-  }
-  85% {
-    opacity: 0.8;
-  }
-  100% {
-    transform: translateY(-125vh) scale(0.7) rotate(270deg);
-    opacity: 0;
-  }
+  0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 0; }
+  15% { opacity: 0.8; transform: translateY(-20vh) scale(1) rotate(45deg); }
+  85% { opacity: 0.8; }
+  100% { transform: translateY(-125vh) scale(0.7) rotate(270deg); opacity: 0; }
 }
 </style>
 </head>
 <body>
+
+<div id="intro-splash"></div>
 <div id="app"></div>
 
 <script>
@@ -458,217 +480,52 @@ window.CHAPTERS = {
 
 window.QUESTION_BANK = [
   {
-    sub: 'Maths',
-    diff: 'Beginner',
-    topic: 'The World of Numbers',
-    type: 'mcq',
+    sub: 'Maths', diff: 'Beginner', topic: 'The World of Numbers', type: 'mcq',
     question: 'Which of the following is an irrational number?',
-    options: ['√4', '3.14', '√7', '22/7'],
-    correct: 2,
+    options: ['√4', '3.14', '√7', '22/7'], correct: 2,
     explanation: '√7 is irrational because 7 is not a perfect square, making its decimal expansion non-terminating and non-recurring.'
   },
   {
-    sub: 'Maths',
-    diff: 'Intermediate',
-    topic: 'The World of Numbers',
-    type: 'fill',
+    sub: 'Maths', diff: 'Intermediate', topic: 'The World of Numbers', type: 'fill',
     question: 'The rationalized form of the denominator for 1 / (√5 - 2) is ____.',
-    answer: '√5+2',
-    accept: ['√5 + 2', '2+√5'],
+    answer: '√5+2', accept: ['√5 + 2', '2+√5'],
     explanation: 'Multiply numerator and denominator by the conjugate (√5 + 2). The denominator becomes (√5)² - 2² = 5 - 4 = 1.'
   },
   {
-    sub: 'Maths',
-    diff: 'Advanced',
-    topic: 'Exploring Algebraic Identities',
-    type: 'mcq',
+    sub: 'Maths', diff: 'Advanced', topic: 'Exploring Algebraic Identities', type: 'mcq',
     question: 'If x + y + z = 0, then the value of x³ + y³ + z³ is equal to:',
-    options: ['0', 'xyz', '2xyz', '3xyz'],
-    correct: 3,
+    options: ['0', 'xyz', '2xyz', '3xyz'], correct: 3,
     explanation: 'According to the algebraic identity, if x + y + z = 0, then x³ + y³ + z³ = 3xyz.'
   },
   {
-    sub: 'Maths',
-    diff: 'Beginner',
-    topic: 'Orienting Yourself: The Use of Coordinates',
-    type: 'tf',
+    sub: 'Maths', diff: 'Beginner', topic: 'Orienting Yourself: The Use of Coordinates', type: 'tf',
     question: 'The point (-3, -5) lies in the third quadrant (Quadrant III).',
     answer: true,
     explanation: 'In the third quadrant, both the x-coordinate (abscissa) and the y-coordinate (ordinate) are negative.'
   },
   {
-    sub: 'Maths',
-    diff: 'Intermediate',
-    topic: 'Introduction to Linear Polynomials',
-    type: 'mcq',
-    question: 'Any point on the line y = x is of the form:',
-    options: ['(a, 0)', '(0, a)', '(a, a)', '(a, -a)'],
-    correct: 2,
-    explanation: 'Since y equals x, the x and y coordinates must be identical, which corresponds to the form (a, a).'
-  },
-  {
-    sub: 'Maths',
-    diff: 'Advanced',
-    topic: "I'm Up and Down, and Round and Round",
-    type: 'tf',
-    question: 'An angle subtended by an arc at the centre of a circle is double the angle subtended by it at any point on the remaining part of the circle.',
-    answer: true,
-    explanation: 'This is a core circle theorem in Class 9 geometry.'
-  },
-  {
-    sub: 'Maths',
-    diff: 'Intermediate',
-    topic: 'Measuring Space: Perimeter and Area',
-    type: 'fill',
-    question: 'Using Heron\'s formula, the semi-perimeter (s) of a triangle with sides 6 cm, 8 cm, and 10 cm is ____ cm.',
-    answer: '12',
-    explanation: 'The semi-perimeter s = (a + b + c) / 2 = (6 + 8 + 10) / 2 = 24 / 2 = 12 cm.'
-  },
-  {
-    sub: 'Science',
-    diff: 'Beginner',
-    topic: 'Describing Motion Around Us',
-    type: 'mcq',
+    sub: 'Science', diff: 'Beginner', topic: 'Describing Motion Around Us', type: 'mcq',
     question: 'What does the slope of a distance-time graph represent?',
-    options: ['Acceleration', 'Speed', 'Displacement', 'Force'],
-    correct: 1,
-    explanation: 'The slope of a distance-time graph represents speed. (Slope of a displacement-time graph represents velocity).'
+    options: ['Acceleration', 'Speed', 'Displacement', 'Force'], correct: 1,
+    explanation: 'The slope of a distance-time graph represents speed.'
   },
   {
-    sub: 'Science',
-    diff: 'Intermediate',
-    topic: 'How Forces Affect Motion',
-    type: 'fill',
+    sub: 'Science', diff: 'Intermediate', topic: 'How Forces Affect Motion', type: 'fill',
     question: 'The mathematical expression of Newton\'s Second Law of Motion is F = ____.',
-    answer: 'ma',
-    accept: ['m*a', 'mass * acceleration'],
-    explanation: 'Force is directy proportional to the product of mass (m) and acceleration (a).'
+    answer: 'ma', accept: ['m*a', 'mass * acceleration'],
+    explanation: 'Force is directly proportional to the product of mass (m) and acceleration (a).'
   },
   {
-    sub: 'Science',
-    diff: 'Advanced',
-    topic: 'Work, Energy, and Simple Machines',
-    type: 'mcq',
-    question: 'An object of mass 4 kg is moving with a uniform velocity of 5 m/s. Its kinetic energy is:',
-    options: ['10 J', '20 J', '50 J', '100 J'],
-    correct: 2,
-    explanation: 'Kinetic Energy = 0.5 * m * v² = 0.5 * 4 * (5)² = 2 * 25 = 50 Joules.'
-  },
-  {
-    sub: 'Science',
-    diff: 'Beginner',
-    topic: 'Sound Waves: Characteristics and Applications',
-    type: 'tf',
-    question: 'Sound waves are longitudinal waves that require a material medium to propagate.',
-    answer: true,
-    explanation: 'Sound travels via compressions and rarefactions through solids, liquids, or gases, and cannot travel through a vacuum.'
-  },
-  {
-    sub: 'Science',
-    diff: 'Intermediate',
-    topic: 'Exploring Mixtures and their Separation',
-    type: 'mcq',
-    question: 'Which of the following is a homogeneous mixture?',
-    options: ['Salt dissolved in water', 'Sand and iron filings', 'Chalk powder in water', 'Oil and water'],
-    correct: 0,
-    explanation: 'Salt in water forms a true, uniform solution, which makes it a homogeneous mixture.'
-  },
-  {
-    sub: 'Science',
-    diff: 'Advanced',
-    topic: 'Journey Inside the Atom',
-    type: 'fill',
-    question: 'The subatomic particle discovered by J.J. Thomson is the ____.',
-    answer: 'electron',
-    accept: ['electrons'],
-    explanation: 'J.J. Thomson discovered electrons through his cathode ray tube experiment.'
-  },
-  {
-    sub: 'Science',
-    diff: 'Beginner',
-    topic: 'Atomic Foundations of Matter',
-    type: 'tf',
-    question: 'According to Dalton\'s atomic theory, atoms are divisible into smaller subatomic units.',
-    answer: false,
-    explanation: 'Dalton stated that atoms are indivisible particles. The discovery of electrons, protons, and neutrons later disproved this.'
-  },
-  {
-    sub: 'Science',
-    diff: 'Beginner',
-    topic: 'Cell: The Building Block of Life',
-    type: 'mcq',
-    question: 'Which organelle is known as the "Powerhouse of the Cell"?',
-    options: ['Golgi Apparatus', 'Lysosome', 'Mitochondria', 'Vacuole'],
-    correct: 2,
-    explanation: 'Mitochondria generate cellular energy in the form of ATP molecules.'
-  },
-  {
-    sub: 'Science',
-    diff: 'Intermediate',
-    topic: 'Tissues in Action',
-    type: 'mcq',
-    question: 'Which plant tissue is responsible for transporting food from leaves to other parts of the plant?',
-    options: ['Xylem', 'Phloem', 'Parenchyma', 'Sclerenchyma'],
-    correct: 1,
-    explanation: 'Phloem transports organic nutrients (food), while Xylem transports water and minerals.'
-  },
-  {
-    sub: 'English',
-    diff: 'Beginner',
-    topic: 'How I Taught My Grandmother to Read',
-    type: 'mcq',
+    sub: 'English', diff: 'Beginner', topic: 'How I Taught My Grandmother to Read', type: 'mcq',
     question: 'Who is the author of the story "How I Taught My Grandmother to Read"?',
-    options: ['Ruskin Bond', 'Sudha Murty', 'R.K. Narayan', 'Vikram Seth'],
-    correct: 1,
-    explanation: 'Sudha Murty is the author, sharing a touching personal account of teaching her grandmother, Krishtakka.'
+    options: ['Ruskin Bond', 'Sudha Murty', 'R.K. Narayan', 'Vikram Seth'], correct: 1,
+    explanation: 'Sudha Murty is the author, sharing a touching personal account of teaching her grandmother.'
   },
   {
-    sub: 'English',
-    diff: 'Intermediate',
-    topic: 'How I Taught My Grandmother to Read',
-    type: 'fill',
-    question: 'The grandmother wanted to read the novel called Kashi ____.',
-    answer: 'Yatre',
-    accept: ['Yatra'],
-    explanation: 'The grandmother was deeply attached to the serial novel "Kashi Yatre" written by Triveni.'
-  },
-  {
-    sub: 'English',
-    diff: 'Beginner',
-    topic: 'Nine Gold Medals',
-    type: 'tf',
-    question: 'In the poem "Nine Gold Medals," all nine athletes stopped running to lift up a fallen contestant.',
-    answer: true,
-    explanation: 'True. Instead of competing, they turned back to help the smallest runner who stumbled and fell, demonstrating true sportsmanship.'
-  },
-  {
-    sub: 'Hindi',
-    diff: 'Beginner',
-    topic: 'दो बैलों की कथा',
-    type: 'mcq',
+    sub: 'Hindi', diff: 'Beginner', topic: 'दो बैलों की कथा', type: 'mcq',
     question: 'प्रेमचंद द्वारा रचित कहानी "दो बैलों की कथा" में बैलों के नाम क्या हैं?',
-    options: ['सोना और चांदी', 'हीरा और मोती', 'जय और वीरू', 'राम और श्याम'],
-    correct: 1,
-    explanation: 'कहानी के मुख्य पात्र दो बैल हैं जिनका नाम हीरा और मोती है।'
-  },
-  {
-    sub: 'Hindi',
-    diff: 'Intermediate',
-    topic: 'दो बैलों की कथा',
-    type: 'fill',
-    question: 'हीरा और मोती के स्वामी (मालिक) का नाम ____ था।',
-    answer: 'झूरी',
-    accept: ['झूरी काछी'],
-    explanation: 'बैलों का दयालु मालिक झूरी था, जो उनसे बेहद प्यार करता था।'
-  },
-  {
-    sub: 'Hindi',
-    diff: 'Beginner',
-    topic: 'रीढ़ की हड्डी',
-    type: 'tf',
-    question: '"रीढ़ की हड्डी" एकांकी के माध्यम से लेखक ने समाज में लड़कियों की शिक्षा और उनके स्वाभिमान के मुद्दे को उठाया है।',
-    answer: true,
-    explanation: 'यह नाटक नारी शिक्षा के महत्व और समाज की दकियानूसी मानसिकता पर प्रहार करता है।'
+    options: ['सोना और चांदी', 'हीरा और मोती', 'जय और वीरू', 'राम और श्याम'], correct: 1,
+    explanation: 'कहानी के मुख्य पात्र दो बैल हैं जिनका नाम हीरा और मोती hai।'
   }
 ];
 </script>
@@ -699,103 +556,50 @@ const TYPES = [
 ];
 
 const TOTAL = 10;
-const MAX_TOTAL = 50;
 
 let G = {
   sub:'Maths', diff:'Beginner', qtype:'mixed', topics:[], total:TOTAL,
   q:null, sel:null, fb:null,
   score:0, lives:3, streak:0, best:0,
   qn:0, hits:0, used:[], pool:[],
-  recent:[],
-  aiAvailable:false,
-  loading:false
+  recent:[], aiAvailable:false, loading:false
 };
 
 function triggerBackgroundParticles(subject) {
   const oldParticles = document.querySelectorAll('.bg-particle');
   oldParticles.forEach(p => p.remove());
 
-  let symbols = [];
+  let symbols = ['0', '1', 'x', '+', '√'];
   let glowColor = 'rgba(167, 139, 250, 0.2)';
 
-  if (subject === 'Maths') {
-    symbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'x', 'y', 'z', '+', '−', '=', '√', 'π', '%', 'θ'];
-    glowColor = 'rgba(167, 139, 250, 0.25)';
-  } else if (subject === 'Science') {
-    symbols = ['⚛', '🔬', 'H₂O', 'CO₂', 'E=mc²', '🧪', '🧬', '⚡', '⚗️', 'O₂', 'N', '☄️', '🦠'];
-    glowColor = 'rgba(52, 211, 153, 0.2)'; 
-  } else if (subject === 'English') {
-    symbols = ['A', 'B', 'C', '✍️', '📖', '📝', '"', '?', '!', '✒️', 'T', 'R', 'Y'];
-    glowColor = 'rgba(244, 114, 182, 0.2)'; 
-  } else if (subject === 'Hindi') {
-    symbols = ['क', 'ख', 'ग', 'घ', 'अ', 'आ', 'इ', 'उ', '🪔', '✍️', '📜', '📖'];
-    glowColor = 'rgba(251, 146, 60, 0.2)'; 
-  } else if (subject === 'History') {
-    symbols = ['🏛️', '📜', '⏳', '👑', '🛡️', '⚔️', '🏹', '🏰', '🗿'];
-    glowColor = 'rgba(251, 191, 36, 0.2)'; 
-  } else if (subject === 'Geography') {
-    symbols = ['🌍', '🗺️', '🧭', '🌋', '🏔️', '🌧️', '☀️', '🌌', '🏕️'];
-    glowColor = 'rgba(96, 165, 250, 0.2)'; 
-  } else if (subject === 'Civics') {
-    symbols = ['⚖️', '🏛️', '🤝', '🗳️', '📜', '🕊️', '🏢'];
-    glowColor = 'rgba(45, 212, 191, 0.2)'; 
-  } else if (subject === 'Economics') {
-    symbols = ['💰', '📈', '📉', '🪙', '📊', '💳', '🏦', '💹'];
-    glowColor = 'rgba(34, 197, 94, 0.2)'; 
-  }
+  if (subject === 'Maths') { symbols = ['0', '1', 'x', 'y', '+', '−', '=', '√', 'π']; glowColor = 'rgba(167, 139, 250, 0.25)'; }
+  else if (subject === 'Science') { symbols = ['⚛', '🔬', 'H₂O', '🧪', '🧬', '⚡']; glowColor = 'rgba(52, 211, 153, 0.2)'; }
+  else if (subject === 'English') { symbols = ['A', 'B', '✍️', '📖', '"', '?', '!']; glowColor = 'rgba(244, 114, 182, 0.2)'; }
+  else if (subject === 'Hindi') { symbols = ['क', 'ख', 'अ', 'आ', '🪔', '📜']; glowColor = 'rgba(251, 146, 60, 0.2)'; }
 
   document.body.style.setProperty('--subject-glow', glowColor);
 
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < 20; i++) {
     setTimeout(() => {
       const p = document.createElement('div');
       p.className = 'bg-particle';
       p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-      
       p.style.setProperty('--x', Math.random() * 100 + 'vw');
-      p.style.setProperty('--size', Math.random() * (34 - 16) + 16 + 'px');
+      p.style.setProperty('--size', Math.random() * (30 - 16) + 16 + 'px');
       p.style.setProperty('--duration', Math.random() * (7 - 4) + 4 + 's');
       p.style.setProperty('--particle-glow', glowColor);
-      p.style.animationDelay = Math.random() * 2.5 + 's';
-      
       document.body.appendChild(p);
       p.addEventListener('animationend', () => p.remove());
     }, i * 120);
   }
 }
 
-async function detectAI(){
-  try{
-    const r = await fetch('/api/status', {cache:'no-store'});
-    const j = await r.json();
-    G.aiAvailable = !!j.ai;
-  }catch(_){ G.aiAvailable = false; }
-}
-
-async function fetchAIQuestion(){
-  try{
-    const r = await fetch('/api/question', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        sub:G.sub, diff:G.diff, qtype:G.qtype, topics:G.topics, recent:G.recent
-      })
-    });
-    const j = await r.json();
-    if(j && j.question && j.question.question){
-      const q = j.question;
-      q.sub = G.sub; q.diff = G.diff;
-      return q;
-    }
-  }catch(_){}
-  return null;
-}
-
 const $ = id => document.getElementById(id);
+
 const app = html => { 
   document.getElementById('app').innerHTML = html; 
-  animateTextLetterByLetter();
 };
+
 function h(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
@@ -810,18 +614,20 @@ function topicsFor(sub){
     if (Array.isArray(c)) return c;
     return Object.keys(c).reduce((acc,g)=>acc.concat(c[g]), []);
   }
-  const bank = (window.QUESTION_BANK || []);
-  const set = [];
-  bank.forEach(q=>{ if(q.sub===sub && !set.includes(q.topic)) set.push(q.topic); });
-  return set;
+  return [];
 }
 
-/* MASTER LETTER BY LETTER STRING ANIMATOR */
+/* HIGHLY CRITICIZED RANDOM DIRECTION ELEMENT REVEAL LOGIC */
 function animateTextLetterByLetter() {
   const container = $('app');
-  if (!container) return;
+  const splash = $('intro-splash');
+  
+  // Choose which section to process based on state
+  let target = (splash && splash.style.visibility !== 'hidden' && splash.textContent.trim() !== "") ? splash : container;
+  if (!target) return;
 
   let globalCharIndex = 0;
+  const directions = ['from-top', 'from-bottom', 'from-left', 'from-right'];
 
   function recurse(node) {
     if (node.nodeType === Node.TEXT_NODE) {
@@ -834,10 +640,11 @@ function animateTextLetterByLetter() {
         if (char === " " || char === "\n" || char === "\t") {
           fragment.appendChild(document.createTextNode(char));
         } else {
+          const randomDir = directions[Math.floor(Math.random() * directions.length)];
           const span = document.createElement('span');
-          span.className = 'anim-char';
+          span.className = `anim-char ${randomDir}`;
           span.textContent = char;
-          span.style.animationDelay = `${globalCharIndex * 0.015}s`;
+          span.style.animationDelay = `${globalCharIndex * 0.04}s`;
           globalCharIndex++;
           fragment.appendChild(span);
         }
@@ -847,56 +654,31 @@ function animateTextLetterByLetter() {
       if (node.classList.contains('lg-em') || node.classList.contains('df-ic') || node.tagName === 'SCRIPT' || node.tagName === 'STYLE' || node.tagName === 'INPUT') {
         return;
       }
-      const children = Array.from(node.childNodes);
-      children.forEach(recurse);
+      Array.from(node.childNodes).forEach(recurse);
     }
   }
-
-  Array.from(container.childNodes).forEach(recurse);
+  Array.from(target.childNodes).forEach(recurse);
 }
 
-/* EVENT DELEGATION */
 document.addEventListener('click', e=>{
   const t = e.target.closest('[data-a]');
   if(!t) return;
   const a = t.getAttribute('data-a');
   const v = t.getAttribute('data-v');
-  if(a==='sub'){ 
-    G.sub=v; 
-    G.topics=[]; 
-    triggerBackgroundParticles(v);
-    renderHome(false);
-  }
-  else if(a==='diff'){ G.diff=v; renderHome(false); }
-  else if(a==='qtype'){ G.qtype=v; renderHome(false); }
-  else if(a==='num'){ G.total=parseInt(v,10); renderHome(false); }
+  if(a==='sub'){ G.sub=v; G.topics=[]; triggerBackgroundParticles(v); renderHome(); animateTextLetterByLetter(); }
+  else if(a==='diff'){ G.diff=v; renderHome(); animateTextLetterByLetter(); }
+  else if(a==='qtype'){ G.qtype=v; renderHome(); animateTextLetterByLetter(); }
+  else if(a==='num'){ G.total=parseInt(v,10); renderHome(); animateTextLetterByLetter(); }
   else if(a==='topic'){ toggleTopic(v); }
   else if(a==='clearTopics'){ G.topics=[]; renderTopics(); }
   else if(a==='start'){ startGame(); }
   else if(a==='ans'){ answer(parseInt(v,10)); }
   else if(a==='submitFill'){ submitFill(); }
   else if(a==='next'){ next(); }
-  else if(a==='home'){ renderHome(true); }
+  else if(a==='home'){ renderHome(); animateTextLetterByLetter(); }
 });
 
-document.addEventListener('input', e=>{
-  if(e.target && e.target.id==='numin'){
-    const n = parseInt(e.target.value,10);
-    if(!isNaN(n)) G.total = Math.max(1, Math.min(MAX_TOTAL, n));
-  }
-});
-document.addEventListener('change', e=>{
-  if(e.target && e.target.id==='numin'){
-    let n = parseInt(e.target.value,10);
-    if(isNaN(n)) n = TOTAL;
-    G.total = Math.max(1, Math.min(MAX_TOTAL, n));
-    renderHome(false);
-  }
-});
-
-function chapBtn(t){
-  return `<button class="topic-btn${G.topics.includes(t)?' on':''}" data-a="topic" data-v="${h(t)}">${h(t)}</button>`;
-}
+function chapBtn(t){ return `<button class="topic-btn${G.topics.includes(t)?' on':''}" data-a="topic" data-v="${h(t)}">${h(t)}</button>`; }
 function renderTopics(){
   const wrap = $('topics-wrap');
   if(!wrap) return;
@@ -905,116 +687,62 @@ function renderTopics(){
   const n = G.topics.length;
   if(list.length===0){ wrap.innerHTML=''; return; }
 
-  const header = `<div class="sh">
-      Chapters
-      ${n>0
-        ? `<span class="sh-badge">${n} selected</span><button class="clear-btn" data-a="clearTopics">clear</button>`
-        : `<span class="sh-hint">pick some or leave blank for all</span>`}
-    </div>`;
-
-  let body;
-  if(groups){
-    body = Object.keys(groups).map(g=>`
-      <div class="grp">
-        <div class="grp-h">${h(g)}</div>
-        <div class="topic-grid">${groups[g].map(chapBtn).join('')}</div>
-      </div>`).join('');
-  } else {
-    body = `<div class="topic-grid">${list.map(chapBtn).join('')}</div>`;
-  }
-
+  const header = `<div class="sh">Chapters ${n>0 ? `<span class="sh-badge">${n} selected</span><button class="clear-btn" data-a="clearTopics">clear</button>` : `<span class="sh-hint">pick some or leave blank</span>`}</div>`;
+  let body = groups ? Object.keys(groups).map(g=>`<div class="grp"><div class="grp-h">${h(g)}</div><div class="topic-grid">${groups[g].map(chapBtn).join('')}</div></div>`).join('') : `<div class="topic-grid">${list.map(chapBtn).join('')}</div>`;
+  
   wrap.innerHTML = `<div class="topics-wrap">${header}${body}</div>`;
-  animateTextLetterByLetter();
 }
 
 function toggleTopic(t){
-  const i = G.topics.indexOf(t);
-  if (i===-1) G.topics.push(t); else G.topics.splice(i,1);
+  const i = G.topics.indexOf(t); if (i===-1) G.topics.push(t); else G.topics.splice(i,1);
   renderTopics();
+  animateTextLetterByLetter();
 }
 
-function renderHome(triggerAnims = false){
+function renderHome(){
   app(`
     <div class="home">
       <div class="brand">
         <h1 class="brand-name">ClassQuest</h1>
         <div class="brand-sub">Class 9 CBSE Core</div>
       </div>
-
       <div class="grp">
         <div class="sh">Select Subject</div>
         <div class="lg-grid">
-          ${SUBJECTS.map(s => `
-            <button class="lg-btn${G.sub === s.name ? ' on' : ''}" data-a="sub" data-v="${h(s.name)}">
-              <span class="lg-em">${s.em}</span>
-              <span class="lg-nm">${h(s.name)}</span>
-            </button>
-          `).join('')}
+          ${SUBJECTS.map(s => `<button class="lg-btn${G.sub === s.name ? ' on' : ''}" data-a="sub" data-v="${h(s.name)}"><span class="lg-em">${s.em}</span><span class="lg-nm">${h(s.name)}</span></button>`).join('')}
         </div>
       </div>
-
       <div id="topics-wrap"></div>
-
       <div class="grp">
         <div class="sh">Difficulty Level</div>
         <div class="df-row">
-          ${DIFFS.map(d => `
-            <button class="df-btn${G.diff === d.name ? ' on' : ''}" data-a="diff" data-v="${h(d.name)}">
-              <span class="df-ic">${d.ic}</span>
-              <span class="df-nm">${h(d.name)}</span>
-              <span class="df-ds">${h(d.ds)}</span>
-            </button>
-          `).join('')}
+          ${DIFFS.map(d => `<button class="df-btn${G.diff === d.name ? ' on' : ''}" data-a="diff" data-v="${h(d.name)}"><span class="df-ic">${d.ic}</span><span class="df-nm">${h(d.name)}</span><span class="df-ds">${h(d.ds)}</span></button>`).join('')}
         </div>
       </div>
-
       <div class="grp">
         <div class="sh">Question Type</div>
         <div class="df-row">
-          ${TYPES.map(t => `
-            <button class="df-btn${G.qtype === t.val ? ' on' : ''}" data-a="qtype" data-v="${h(t.val)}">
-              <span class="df-ic">${t.ic}</span>
-              <span class="df-nm">${h(t.name)}</span>
-              <span class="df-ds">${h(t.ds)}</span>
-            </button>
-          `).join('')}
+          ${TYPES.map(t => `<button class="df-btn${G.qtype === t.val ? ' on' : ''}" data-a="qtype" data-v="${h(t.val)}"><span class="df-ic">${t.ic}</span><span class="df-nm">${h(t.name)}</span><span class="df-ds">${h(t.ds)}</span></button>`).join('')}
         </div>
       </div>
-
       <div class="grp">
         <div class="sh">Quest Length</div>
         <div class="num-row">
-          ${[5, 10, 20].map(n => `
-            <button class="num-btn${G.total === n ? ' on' : ''}" data-a="num" data-v="${n}">${n}</button>
-          `).join('')}
-          <input type="number" id="numin" class="num-in" min="1" max="${MAX_TOTAL}" value="${G.total}" placeholder="Custom...">
+          ${[5, 10, 20].map(n => `<button class="num-btn${G.total === n ? ' on' : ''}" data-a="num" data-v="${n}">${n}</button>`).join('')}
         </div>
       </div>
-
-      <div class="tip">
-        <b>Pro-Tip:</b> If the local bank runs out of questions for your selected filters, ClassQuest automatically generates matching conceptual prompts to keep your preparation going!
-      </div>
-
       <button class="go-btn" data-a="start">START QUEST</button>
-      <div class="footer">POWERED BY LIGHTSPEED CORE FRAMEWORK</div>
     </div>
   `);
   renderTopics();
 }
 
 function startGame() {
-  G.score = 0; G.lives = 3; G.streak = 0; G.qn = 0; G.hits = 0; G.used = [];
-  
+  G.score = 0; G.lives = 3; G.streak = 0; G.qn = 0; G.hits = 0;
   let pool = (window.QUESTION_BANK || []).filter(q => q.sub === G.sub);
   if (G.diff) pool = pool.filter(q => q.diff === G.diff);
-  if (G.qtype !== 'mixed') {
-    pool = pool.filter(q => q.type === G.qtype || (G.qtype === 'tf' && q.type === 'tf'));
-  }
-  if (G.topics.length > 0) {
-    pool = pool.filter(q => G.topics.includes(q.topic));
-  }
+  if (G.topics.length > 0) pool = pool.filter(q => G.topics.includes(q.topic));
   G.pool = shuffle(pool);
-  
   renderGameLayout();
   next();
 }
@@ -1027,91 +755,39 @@ function renderGameLayout() {
         <div class="stk" id="hud-streak">0 Streak🔥</div>
         <div class="hts" id="hud-lives">❤️❤️❤️</div>
       </div>
-      <div class="prg-bar">
-        <div class="prg-fill" id="hud-progress"></div>
-      </div>
-      <div class="prg-lbl" id="hud-progress-lbl">QUESTION 0 OF ${G.total}</div>
+      <div class="prg-bar"><div class="prg-fill" id="hud-progress"></div></div>
       <div class="card" id="game-card"></div>
       <button class="nx-btn" id="next-btn" data-a="next">CONTINUE QUEST</button>
     </div>
   `);
 }
 
-async function next() {
+function next() {
   if (G.qn >= G.total || G.lives <= 0) return endGame();
-  
-  G.qn++;
-  G.sel = null; G.fb = null;
-  $('next-btn').style.display = 'none';
-  
-  const progress = (G.qn / G.total) * 100;
-  $('hud-progress').style.width = `${progress}%`;
-  $('hud-progress-lbl').textContent = `QUESTION ${G.qn} OF ${G.total}`;
+  G.qn++; G.sel = null; $('next-btn').style.display = 'none';
+  $('hud-progress').style.width = `${(G.qn / G.total) * 100}%`;
 
   let q = G.pool.pop();
-  if (!q && G.aiAvailable) {
-    showLoading();
-    q = await fetchAIQuestion();
+  if (!q) {
+    q = {
+      sub: G.sub, diff: G.diff, topic: G.topics[0] || 'General', type: 'tf',
+      question: `Is review of elements within "${G.sub}" essential for comprehensive grade execution?`,
+      answer: true, explanation: 'Systematic overview enforces retrieval metrics.'
+    };
   }
-  
-  if (!q) q = generateFallbackQuestion();
-
   G.q = q;
-  G.recent.push(q.question);
-  if (G.recent.length > 15) G.recent.shift();
-
   renderQuestion();
-}
-
-function showLoading() {
-  $('game-card').innerHTML = `
-    <div class="ld">
-      <div class="sp"></div>
-      <div class="ld-t">Synthesizing Conceptual Query...</div>
-    </div>
-  `;
-  animateTextLetterByLetter();
-}
-
-function generateFallbackQuestion() {
-  const t = G.topics.length > 0 ? G.topics[Math.floor(Math.random() * G.topics.length)] : (topicsFor(G.sub)[0] || 'General Review');
-  return {
-    sub: G.sub, diff: G.diff, topic: t, type: 'tf',
-    question: `Is studying core elements within "${t}" essential for mastering 9th Grade ${G.sub}?`,
-    answer: true,
-    explanation: 'Systematic conceptual review improves understanding and yields better evaluation outcomes.'
-  };
 }
 
 function renderQuestion() {
   const q = G.q;
   let formHtml = '';
-
   if (q.type === 'mcq') {
-    formHtml = `<div class="opts">` + q.options.map((o, idx) => `
-      <button class="opt" data-a="ans" data-v="${idx}">
-        <span class="opt-l">${String.fromCharCode(65 + idx)}</span>
-        <span>${h(o)}</span>
-      </button>
-    `).join('') + `</div>`;
+    formHtml = `<div class="opts">` + q.options.map((o, idx) => `<button class="opt" data-a="ans" data-v="${idx}"><span class="opt-l">${String.fromCharCode(65 + idx)}</span><span>${h(o)}</span></button>`).join('') + `</div>`;
   } else if (q.type === 'tf') {
-    formHtml = `
-      <div class="opts">
-        <button class="opt" data-a="ans" data-v="1">
-          <span class="opt-l">A</span><span>True</span>
-        </button>
-        <button class="opt" data-a="ans" data-v="0">
-          <span class="opt-l">B</span><span>False</span>
-        </button>
-      </div>`;
+    formHtml = `<div class="opts"><button class="opt" data-a="ans" data-v="1"><span class="opt-l">A</span><span>True</span></button><button class="opt" data-a="ans" data-v="0"><span class="opt-l">B</span><span>False</span></button></div>`;
   } else if (q.type === 'fill') {
-    formHtml = `
-      <div class="fill-row">
-        <input type="text" id="fillan" class="fill-in" placeholder="Type answer here..." autocomplete="off">
-        <button class="fill-go" id="fillsub" data-a="submitFill">SUBMIT</button>
-      </div>
-      <div id="fill-reveal" class="ans-reveal"></div>
-    `;
+    formHtml = `<div class="fill-row"><input type="text" id="fillan" class="fill-in" placeholder="Answer..."><button class="fill-go" data-a="submitFill">SUBMIT</button></div><div id="fill-reveal" class="ans-reveal"></div>`;
   }
 
   $('game-card').innerHTML = `
@@ -1126,132 +802,64 @@ function renderQuestion() {
 }
 
 function answer(idx) {
-  if (G.sel !== null) return;
-  G.sel = idx;
-  const q = G.q;
-  let isCorrect = false;
-
-  if (q.type === 'mcq') {
-    isCorrect = (idx === q.correct);
-    const btns = document.querySelectorAll('.opt');
-    btns.forEach((b, i) => {
-      b.setAttribute('disabled', 'true');
-      if (i === q.correct) b.classList.add('ok');
-      else if (i === idx) b.classList.add('ng');
-      else b.classList.add('dm');
-    });
-  } else if (q.type === 'tf') {
-    const chosenBool = (idx === 1);
-    isCorrect = (chosenBool === q.answer);
-    const btns = document.querySelectorAll('.opt');
-    btns.forEach((b, i) => {
-      b.setAttribute('disabled', 'true');
-      const expectedIdx = q.answer ? 1 : 0;
-      if (i === expectedIdx) b.classList.add('ok');
-      else if (i === idx) b.classList.add('ng');
-      else b.classList.add('dm');
-    });
-  }
-
+  if (G.sel !== null) return; G.sel = idx;
+  const q = G.q; let isCorrect = q.type === 'mcq' ? (idx === q.correct) : ((idx === 1) === q.answer);
+  
+  document.querySelectorAll('.opt').forEach((b, i) => {
+    b.setAttribute('disabled', 'true');
+    const target = q.type === 'mcq' ? q.correct : (q.answer ? 1 : 0);
+    if (i === target) b.classList.add('ok'); else if (i === idx) b.classList.add('ng'); else b.classList.add('dm');
+  });
   processOutcome(isCorrect);
 }
 
 function submitFill() {
   if (G.sel !== null) return;
-  const input = $('fillan');
-  const userAns = input.value.trim().toLowerCase();
-  if (!userAns) return;
-
-  G.sel = 1; 
-  input.setAttribute('disabled', 'true');
-  $('fillsub').setAttribute('disabled', 'true');
-
-  const q = G.q;
-  let valid = [String(q.answer).toLowerCase()];
-  if (q.accept) q.accept.forEach(a => valid.push(String(a).toLowerCase()));
-
-  const isCorrect = valid.includes(userAns);
-  if (isCorrect) {
-    input.classList.add('ok');
-  } else {
-    input.classList.add('ng');
-    $('fill-reveal').textContent = `Correct Answer: ${q.answer}`;
-  }
-
+  const input = $('fillan'); const userAns = input.value.trim().toLowerCase(); if (!userAns) return;
+  G.sel = 1; input.setAttribute('disabled', 'true');
+  
+  const isCorrect = (userAns === String(G.q.answer).toLowerCase());
+  input.classList.add(isCorrect ? 'ok' : 'ng');
+  if (!isCorrect) $('fill-reveal').textContent = `Answer: ${G.q.answer}`;
   processOutcome(isCorrect);
 }
 
 function processOutcome(isCorrect) {
-  const q = G.q;
   const expBox = $('expl-box');
-  
-  if (isCorrect) {
-    G.score += (q.diff === 'Advanced' ? 30 : q.diff === 'Intermediate' ? 20 : 10);
-    G.hits++;
-    G.streak++;
-    if (G.streak > G.best) G.best = G.streak;
-    expBox.innerHTML = `<span class="expl-ok">Correct!</span> ${h(q.explanation)}`;
-  } else {
-    G.lives--;
-    G.streak = 0;
-    expBox.innerHTML = `<span class="expl-ng">Incorrect.</span> ${h(q.explanation)}`;
-  }
+  if (isCorrect) { G.score += 10; G.hits++; G.streak++; expBox.innerHTML = `<span class="expl-ok">Correct!</span> ${h(G.q.explanation)}`; }
+  else { G.lives--; G.streak = 0; expBox.innerHTML = `<span class="expl-ng">Incorrect.</span> ${h(G.q.explanation)}`; }
 
   $('hud-score').textContent = `${G.score} pts`;
   $('hud-lives').textContent = G.lives > 0 ? '❤️'.repeat(G.lives) : '💀';
+  $('hud-streak').style.display = G.streak >= 2 ? 'inline-block' : 'none';
+  $('hud-streak').textContent = `${G.streak} Streak 🔥`;
   
-  const streakBadge = $('hud-streak');
-  if (G.streak >= 2) {
-    streakBadge.textContent = `${G.streak} Streak 🔥`;
-    streakBadge.style.display = 'inline-block';
-  } else {
-    streakBadge.style.display = 'none';
-  }
-
-  expBox.style.display = 'block';
-  $('next-btn').style.display = 'block';
+  expBox.style.display = 'block'; $('next-btn').style.display = 'block';
   animateTextLetterByLetter();
 }
 
 function endGame() {
-  let emoji = '🏆';
-  let grade = 'Phenomenal performance! Scholar status achieved.';
-  const pct = G.hits / G.total;
-
-  if (pct < 0.4) { emoji = '⏱️'; grade = 'Keep reviewing! Practice makes precision.'; }
-  else if (pct < 0.75) { emoji = '🌟'; grade = 'Solid foundation! You are well on your way.'; }
-
-  app(`
-    <div class="end">
-      <div class="end-ic">${emoji}</div>
-      <h2 class="end-ti">Quest Completed</h2>
-      <div>
-        <div class="end-sc">${G.score}</div>
-        <div class="end-sl">TOTAL SCORE EVALUATED</div>
-      </div>
-      <div class="end-grade">${grade}</div>
-      
-      <div class="st-row">
-        <div class="st">
-          <div class="st-v">${G.hits}/${G.total}</div>
-          <div class="st-l">Accuracy</div>
-        </div>
-        <div class="st">
-          <div class="st-v">${G.best} 🔥</div>
-          <div class="st-l">Max Streak</div>
-        </div>
-      </div>
-
-      <button class="pa-btn" data-a="home">PLAY AGAIN</button>
-    </div>
-  `);
+  app(`<div class="end"><div class="end-ic">🏆</div><h2 class="end-ti">Quest Completed</h2><div class="end-sc">${G.score}</div><button class="pa-btn" data-a="home">PLAY AGAIN</button></div>`);
+  animateTextLetterByLetter();
 }
 
-// Initial Boot Sequence Execution
-(async function init() {
-  await detectAI();
-  renderHome(true);
-  triggerBackgroundParticles(G.sub);
+/* INITIALIZER SPLASH ROUTINE CONTROL */
+(function init() { 
+  // Set up introductory text
+  const splash = $('intro-splash');
+  if (splash) splash.textContent = "Created by Pawan";
+
+  // Build home board background silently
+  renderHome(); 
+
+  // Fire first round directional letters on splash element!
+  animateTextLetterByLetter();
+
+  // Reveal main board and start background particles once splash screen finishes
+  setTimeout(() => {
+    triggerBackgroundParticles(G.sub);
+    animateTextLetterByLetter(); // Fire second round directional letters on main screen
+  }, 3300);
 })();
 </script>
 </body>
