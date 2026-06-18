@@ -1,30 +1,51 @@
 /* ============================================================================
+
    ClassQuest — AI Question Server  (Node 18+, ZERO dependencies)
+
    ----------------------------------------------------------------------------
+
    Does two jobs:
+
      1. Serves the game files (ClassQuest.html, classquest.html, questions.js).
+
      2. POST /api/question  → calls an AI provider to generate ONE fresh
+
         question (MCQ / True-False / Fill-in-the-blank), keeping your API key
+
         safe on the SERVER. The browser never sees your key.
 
    If no key is set (or the AI call fails), the game falls back to the offline
+
    question bank automatically, so it never breaks.
 
    ── HOW TO RUN ───────────────────────────────────────────────────────────
+
    1. Get a key (pick ONE — Groq & Gemini have free tiers, no card needed):
+
         Groq      (free, fast): https://console.groq.com/keys
+
         Gemini    (free):       https://aistudio.google.com/apikey
+
         OpenAI    (paid):       https://platform.openai.com/api-keys
+
         Anthropic (paid):       https://console.anthropic.com/
+
    2. Set it as an env var and start the server:
+
         macOS / Linux:    export GROQ_API_KEY="your_key"   &&  node server.js
+
         Windows (PS):     $env:GROQ_API_KEY="your_key";        node server.js
+
    3. Open  http://localhost:3000
 
    ── ON RENDER ────────────────────────────────────────────────────────────
+
    Add one Environment Variable (whichever provider you use), e.g.
+
         GROQ_API_KEY = your_key
+
    Build: npm install   ·   Start: node server.js
+
    ============================================================================ */
 
 const http = require('http');
@@ -35,6 +56,7 @@ const PORT = process.env.PORT || 3000;
 
 /* ── PROVIDER CONFIG — auto-pick whichever key is present ──
    Priority: Groq → Gemini → OpenAI → Anthropic. */
+
 const GROQ_KEY      = process.env.GROQ_API_KEY      || '';
 const GEMINI_KEY    = process.env.GEMINI_API_KEY    || '';
 const OPENAI_KEY    = process.env.OPENAI_API_KEY    || '';
@@ -54,29 +76,31 @@ const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || 'claude-3-5-haiku-2024102
 /* ----------------------------------------------------------------------------
    Build the prompt for ONE Class-9 question of the requested type.
    ---------------------------------------------------------------------------- */
+
 function buildPrompt({ sub, diff, qtype, topics, recent }) {
   const chapterLine = (topics && topics.length)
     ? `Focus ONLY on these chapter(s): ${topics.join(', ')}.`
     : 'Pick any chapter from this subject.';
 
-  const avoid = (recent && recent.length)
-    ? `Do NOT repeat or closely resemble any of these recent questions: ${recent.slice(-6).map(r=>`"${r}"`).join(' | ')}.`
+  // 🛠️ FIXED: Properly quote each recent question so AI can see them clearly
+  const avoid = (recent && recent.length > 0)
+    ? `Do NOT repeat or closely resemble any of these recent questions:\n${recent.slice(-6).map((r, i) => `  ${i + 1}. "${r}"`).join('\n')}\nMake your new question COMPLETELY DIFFERENT from all of the above.`
     : '';
 
   // Difficulty guidance — pushes the model to make genuinely challenging,
   // exam-grade questions instead of trivial recall.
   const diffGuide = ({
     'Beginner':
-`This is BEGINNER level, but it must still be a proper exam question — NOT trivial.
+      `This is BEGINNER level, but it must still be a proper exam question — NOT trivial.
 Test clear understanding of a core concept or a simple one-step application.
 Avoid yes/no obvious facts; the options must all look believable.`,
     'Intermediate':
-`This is INTERMEDIATE level. Make it genuinely challenging.
+      `This is INTERMEDIATE level. Make it genuinely challenging.
 Require applying a concept, a 2–3 step calculation, interpreting a situation,
 or connecting two ideas. The distractors (wrong options) must be common
 mistakes a student would actually make, so the answer isn't obvious.`,
     'Advanced':
-`This is ADVANCED level. Make it HARD — like a tough board-exam / HOTS question.
+      `This is ADVANCED level. Make it HARD — like a tough board-exam / HOTS question.
 Require multi-step reasoning, deeper analysis, application to an unfamiliar
 scenario, or combining several concepts. Every wrong option must be very
 tempting and plausible. Do NOT make it answerable by simple memorisation.`
@@ -84,31 +108,38 @@ tempting and plausible. Do NOT make it answerable by simple memorisation.`
 
   // Which JSON shape do we want back?
   let shapeRules;
+
   if (qtype === 'mcq') {
     shapeRules =
-`Return a MULTIPLE-CHOICE question in EXACTLY this JSON shape:
+      `Return a MULTIPLE-CHOICE question in EXACTLY this JSON shape:
 {"type":"mcq","topic":"<chapter>","question":"<text>","options":["A","B","C","D"],"correct":0,"explanation":"<one short sentence>"}
 - "options": exactly 4 plausible choices (plain text, no "A)" prefixes). All four must be believable; wrong ones should be realistic mistakes.
-- "correct": the index (0,1,2,3) of the correct option.`;
+- "correct": the index (0,1,2,3) of the correct option.
+- IMPORTANT: The question TOPIC, CONTENT, and FORMAT must be different from any recent question listed above.`;
   } else if (qtype === 'tf') {
     shapeRules =
-`Return a TRUE/FALSE question in EXACTLY this JSON shape:
+      `Return a TRUE/FALSE question in EXACTLY this JSON shape:
 {"type":"tf","topic":"<chapter>","question":"<statement>","answer":true,"explanation":"<one short sentence>"}
 - "answer": true or false (boolean).
-- Make the statement subtle — include a common misconception so it isn't obvious.`;
+- Make the statement subtle — include a common misconception so it isn't obvious.
+- IMPORTANT: The question TOPIC, CONTENT, and FORMAT must be different from any recent question listed above.`;
   } else if (qtype === 'fill') {
     shapeRules =
-`Return a FILL-IN-THE-BLANK question in EXACTLY this JSON shape:
+      `Return a FILL-IN-THE-BLANK question in EXACTLY this JSON shape:
 {"type":"fill","topic":"<chapter>","question":"<text with ____ for the blank>","answer":"<correct answer>","accept":["<other accepted answers>"],"explanation":"<one short sentence>"}
 - Put a blank "____" in the question text. The blank should test a precise term, value or result — not something trivially obvious.
-- "accept": optional array of other acceptable answers / spellings (can be empty []).`;
+- "accept": optional array of other acceptable answers / spellings (can be empty []).
+- IMPORTANT: The question TOPIC, CONTENT, and FORMAT must be different from any recent question listed above.`;
   } else {
     // mixed — let the model choose one type
     shapeRules =
-`Choose ONE question type (mcq, tf, or fill) and return EXACTLY one of these JSON shapes:
+      `Choose ONE question type (mcq, tf, or fill) and return EXACTLY one of these JSON shapes:
+
 MCQ : {"type":"mcq","topic":"<chapter>","question":"<text>","options":["A","B","C","D"],"correct":0,"explanation":"<one short sentence>"}
 TF  : {"type":"tf","topic":"<chapter>","question":"<statement>","answer":true,"explanation":"<one short sentence>"}
-FILL: {"type":"fill","topic":"<chapter>","question":"<text with ____>","answer":"<answer>","accept":[],"explanation":"<one short sentence>"}`;
+FILL: {"type":"fill","topic":"<chapter>","question":"<text with ____>","answer":"<answer>","accept":[],"explanation":"<one short sentence>"}
+
+- IMPORTANT: The question TOPIC, CONTENT, and FORMAT must be different from any recent question listed above.`;
   }
 
   return `You are an expert question-paper setter for the Indian CBSE Class 9 curriculum.
@@ -122,12 +153,15 @@ ${diffGuide}
 ${shapeRules}
 
 Return ONLY raw JSON — no markdown, no code fences, no commentary.
-The question must be factually correct and strictly within the Class 9 syllabus, but should make the student think. The "explanation" must be one short sentence.`;
+The question must be factually correct and strictly within the Class 9 syllabus, but should make the student think. The "explanation" must be one short sentence.
+
+🔥 CRITICAL: Make sure this question is UNIQUE — different topic, different concept, different style from any you have generated before. Vary the chapters and topics widely.`;
 }
 
 /* ----------------------------------------------------------------------------
    Provider callers — each returns the raw text the model produced.
    ---------------------------------------------------------------------------- */
+
 async function callGroq(prompt) {
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -197,6 +231,7 @@ async function callAnthropic(prompt) {
 /* ----------------------------------------------------------------------------
    Parse + validate the model output into a clean ClassQuest question object.
    ---------------------------------------------------------------------------- */
+
 function parseQuestion(raw) {
   const clean = String(raw || '').replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
   const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
@@ -216,7 +251,7 @@ function parseQuestion(raw) {
 
   if (type === 'mcq') {
     if (!Array.isArray(p.options) || p.options.length < 2) throw new Error('Bad MCQ options');
-    // strip accidental "A) " prefixes
+    // 🛠️ FIXED: Properly strip accidental "A) " prefixes
     p.options = p.options.map(o => String(o).replace(/^[A-Fa-f][).]\s*/, '').trim());
     let c = p.correct;
     if (typeof c === 'string') c = 'ABCDEF'.indexOf(c.trim().toUpperCase().charAt(0));
@@ -249,6 +284,7 @@ async function generateQuestion(body) {
 /* ----------------------------------------------------------------------------
    Static file serving
    ---------------------------------------------------------------------------- */
+
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.js':   'text/javascript; charset=utf-8',
@@ -272,6 +308,7 @@ function serveStatic(req, res) {
 /* ----------------------------------------------------------------------------
    HTTP server
    ---------------------------------------------------------------------------- */
+
 const server = http.createServer((req, res) => {
   // status endpoint → tells the browser if AI is available
   if (req.method === 'GET' && req.url === '/api/status') {
@@ -306,8 +343,8 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log('\n  📚  ClassQuest server running');
-  console.log(`  →  http://localhost:${PORT}`);
-  console.log(`  AI provider: ${PROVIDER === 'none' ? 'NONE (offline bank only)' : PROVIDER}`);
+  console.log(`→  http://localhost:${PORT}`);
+  console.log(`AI provider: ${PROVIDER === 'none' ? 'NONE (offline bank only)' : PROVIDER}`);
   if (PROVIDER === 'none') {
     console.log('\n  ℹ  No API key found. The game still works using the offline');
     console.log('     question bank. To enable UNLIMITED AI questions, set a key:');
